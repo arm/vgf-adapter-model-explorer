@@ -1,0 +1,84 @@
+#
+# SPDX-FileCopyrightText: Copyright 2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+# SPDX-License-Identifier: Apache-2.0
+#
+# Licensed under the Apache License v2.0
+# See http://www.apache.org/licenses/LICENSE-2.0 for license information.
+#
+
+[build-system]
+build-backend = "setuptools.build_meta"
+requires = ["setuptools>=61", "wheel"]
+
+[project]
+name = "vgf-adapter-model-explorer"
+version = "0.0.1"
+description = "Adapter for ai-edge-model-explorer to support VGF files"
+readme = "README.md"
+requires-python = ">=3.10, <3.13"
+keywords = ["model-explorer", "vgf", "visualization"]
+license = "Apache-2.0"
+
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Developers",
+  "Operating System :: POSIX",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+  "ai-edge-model-explorer"
+]
+
+[project.urls]
+Repository = "https://github.com/arm/vgf-adapter-model-explorer"
+
+[project.optional-dependencies]
+test = [
+    "pytest"
+]
+format = [
+  "ruff==0.5.2"
+]
+
+[tool.pyright]
+extraPaths = [
+    ".",
+    "./src",
+]
+autoSearchPaths = true
+useLibraryCodeForTypes = true
+diagnosticMode = "workspace"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+"*" = ["*.so", "*.0git"]
+vgf_adapter_model_explorer = ["bin/*"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+testpaths = ["src/vgf_adapter_model_explorer/tests"]
+
+[tool.ruff]
+line-length = 79
+target-version = "py312"
+
+[tool.ruff.lint]
+# https://docs.astral.sh/ruff/rules/
+select = [
+    "F", #Pyflakes
+    "B", #Bugbear
+    "I", #Isort
+    "SIM", #Simplify
+    "C4", #Comprehensions
+]

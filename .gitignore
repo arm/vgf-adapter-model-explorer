@@ -1,0 +1,31 @@
+.DS_Store
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[codz]
+*$py.class
+
+# Distribution / packaging
+.Python
+dist/
+.eggs/
+wheels/
+*.egg-info/
+*.egg
+MANIFEST
+
+# Unit test / coverage reports
+.coverage
+.coverage.*
+.cache
+.pytest_cache/
+
+# Environments
+.env
+.envrc
+.venv
+env/
+venv/
+
+# Ruff stuff:
+.ruff_cache/

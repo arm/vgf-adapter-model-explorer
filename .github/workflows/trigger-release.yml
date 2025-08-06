@@ -1,0 +1,62 @@
+name: Trigger Release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  tag-new-release:
+    runs-on: ubuntu-latest
+    steps:
+      # We want our tag push at the end to trigger a workflow. We can't do that using repository's GITHUB_TOKEN.
+      # https://docs.github.com/en/actions/writing-workflows/choosing-when-your-workflow-runs/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+      - uses: getsentry/action-github-app-token@d4b5da6c5e37703f8c3b3e43abb5705b46e159cc # v3.0.0
+        id: get_app_token
+        with:
+          app_id: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
+          private_key: ${{ secrets.ME_REPO_ACCESS_PRIVATE_KEY }}
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.get_app_token.outputs.token }}
+      - name: Set git config for ML Repo bot
+        run: |
+          git config --global user.email "1736931+model-explorer-plugins-repo-access[bot]@users.noreply.github.com"
+          git config --global user.name "model-explorer-plugins-repo-access[bot]"
+      - name: Calculate new version
+        uses: orhun/git-cliff-action@4a4a951bc43fafe41cd2348d181853f52356bee7 # v4.4.2
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: --bump --no-exec --github-repo ${{ github.repository }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check if there's anything to release
+        run: |
+          BUMPED_TAG=${{ steps.git-cliff.outputs.version }}
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo 'v0.0.0')
+          if [[ "$BUMPED_TAG" == "null" || -z "$BUMPED_TAG" ]]; then
+            exit 1
+            fi
+          if [[ "$BUMPED_TAG" == "$LATEST_TAG" ]]; then
+            echo "Bumped tag is the same as latest: $BUMPED_TAG. Nothing to release."
+            exit 1
+          fi
+      - name: Trim the v from version tag
+        id: strip-v-from-version-tag
+        run: |
+          RELEASE_VERSION=${{ steps.git-cliff.outputs.version }}
+          RELEASE_VERSION_WITHOUT_V="${RELEASE_VERSION#v}"
+          echo "version=$RELEASE_VERSION_WITHOUT_V" >> "$GITHUB_OUTPUT"
+      - name: Update pyproject version
+        run: |
+          VERSION=${{ steps.strip-v-from-version-tag.outputs.version }}
+          sed -i "s/^version = \".*\"/version = \"$VERSION\"/" pyproject.toml
+          git add pyproject.toml
+          git commit -m "Update pyproject version to v$VERSION"
+          git push
+      - name: Tag new release
+        run: |
+          VERSION=${{ steps.git-cliff.outputs.version }}
+          git tag $VERSION
+          git push origin tag $VERSION

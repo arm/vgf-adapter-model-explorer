@@ -1,0 +1,271 @@
+name: Model Explorer VGF Plugin CI
+on:
+  push:
+    branches: ["main"]
+    tags:
+      - "v*.*.*"
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+jobs:
+  build:
+    env:
+      LLVM_REF: 802ea0eb78f7c974d4097c38587f4c207451d7ee
+      FLATBUFFERS_REF: 595bf0007ab1929570c7671f091313c8fc20644e
+      ARGPARSE_REF: 3eda91b2e1ce7d569f84ba295507c4cd8fd96910
+      JSON_REF: 55f93686c01528224f448c19128836e7df245f72
+      VGF_LIB_REF: bf2de11731b7e60a8f1fe04da47a56fa003a80ed
+      MODEL_CONVERTER_REF: d990f8a45b65b76a28951f1958bb72a69c3e58e3
+    strategy:
+      fail-fast: false
+      matrix:
+        runner: [ubuntu-latest]
+        platform: [linux_x86_64]
+        arch: [x64]
+        python-version: ["3.12", "3.11", "3.10"]
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - name: Get app token
+        uses: getsentry/action-github-app-token@d4b5da6c5e37703f8c3b3e43abb5705b46e159cc # v3.0.0
+        id: get_app_token
+        with:
+          app_id: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
+          private_key: ${{ secrets.ME_REPO_ACCESS_PRIVATE_KEY }}
+
+      - name: Set up Python environment
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Checkout Model Converter repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: arm/ai-ml-sdk-model-converter
+          path: ai-ml-sdk-model-converter
+          ref: ${{ env.MODEL_CONVERTER_REF }}
+
+      - name: Checkout LLVM repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: llvm/llvm-project
+          path: llvm-project
+          token: ${{ steps.get_app_token.outputs.token }}
+          ref: ${{ env.LLVM_REF }}
+
+      - name: Set up LLVM CMake build cache
+        id: cache-llvm-cc
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: llvm-project/build
+          # This needs pinning to a version eventually
+          key:  ${{ runner.os }}-${{ matrix.arch }}-python-${{ matrix.python-version }}-llvm-${{ env.LLVM_REF }}
+
+
+      - name: Build LLVM
+        if: ${{ steps.cache-llvm-cc.outputs.cache-hit != 'true' }}
+        run: |
+          cd llvm-project
+          python -m venv .venv
+          source .venv/bin/activate
+          python -m pip install --upgrade pip
+          python -m pip install -r mlir/python/requirements.txt
+          cp $GITHUB_WORKSPACE/ai-ml-sdk-model-converter/patches/llvm.patch .
+          patch -p1 < llvm.patch
+          mkdir -p build
+          cd build
+          cmake -G Ninja ../llvm -DLLVM_ENABLE_PROJECTS=mlir -DLLVM_TARGETS_TO_BUILD="Native" -DCMAKE_BUILD_TYPE=Release -DLLVM_REQUIRES_RTTI=ON -DLLVM_REQUIRES_EH=ON -DLLVM_ENABLE_RTTI=ON -DLLVM_ENABLE_EH=ON -DLLVM_ENABLE_ASSERTIONS=ON -DLLVM_ABI_BREAKING_CHECKS=FORCE_OFF -DMLIR_INCLUDE_INTEGRATION_TESTS=ON -DLLVM_ENABLE_TERMINFO=OFF -DMLIR_ENABLE_BINDINGS_PYTHON=ON -DPython3_EXECUTABLE=$(which python)
+          cmake --build . --target check-mlir
+          deactivate
+
+      - name: Strip mlir-translate
+        run: strip ${{ github.workspace }}/llvm-project/build/bin/mlir-translate
+
+      - name: Add mlir-translate to PATH
+        run: echo "${{ github.workspace }}/llvm-project/build/bin" >> "$GITHUB_PATH"
+
+      - name: Checkout flatbuffers repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: google/flatbuffers
+          path: flatbuffers
+          ref: ${{ env.FLATBUFFERS_REF }}
+
+      - name: Set up flatbuffers build cache
+        id: cache-flatbuffers-cc
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: flatbuffers
+          key: ${{ runner.os }}-${{ matrix.arch }}-flatbuffers-${{ env.FLATBUFFERS_REF }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.arch }}-flatbuffers-
+
+      - name: Build flatbuffers
+        if: ${{ steps.cache-flatbuffers-cc.outputs.cache-hit != 'true' }}
+        run: |
+          cd flatbuffers
+          cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+          make -j
+
+      - name: Checkout argparse repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: p-ranav/argparse
+          path: argparse
+          ref: ${{ env.ARGPARSE_REF }}
+
+      - name: Set up argparse build cache
+        id: cache-argparse-cc
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: argparse/build
+          key: ${{ runner.os }}-${{ matrix.arch }}-argparse-${{ env.ARGPARSE_REF }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.arch }}-argparse-
+
+      - name: Build argparse
+        if: ${{ steps.cache-argparse-cc.outputs.cache-hit != 'true' }}
+        run: |
+          cd argparse
+          mkdir -p build
+          cd build
+          cmake -DARGPARSE_BUILD_SAMPLES=on -DARGPARSE_BUILD_TESTS=on ..
+          make
+
+      - name: Checkout json repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: nlohmann/json
+          path: json
+          ref: ${{ env.JSON_REF }}
+
+      - name: Checkout VGF library repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: arm/ai-ml-sdk-vgf-library
+          path: ai-ml-sdk-vgf-library
+          ref: ${{ env.VGF_LIB_REF }}
+
+      - name: Set up VGF library build cache
+        id: cache-vgf-lib-cc
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ai-ml-sdk-vgf-library/build
+          key: ${{ runner.os }}-${{ matrix.arch }}-vgf-lib-${{ env.VGF_LIB_REF }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.arch }}-vgf-lib-
+
+      - name: Build VGF library
+        if: ${{ steps.cache-vgf-lib-cc.outputs.cache-hit != 'true' }}
+        run: |
+          cd ai-ml-sdk-vgf-library
+          python -m venv .venv
+          source .venv/bin/activate
+          ./scripts/build.py --flatc-path $GITHUB_WORKSPACE/flatbuffers/flatc --argparse-path $GITHUB_WORKSPACE/argparse --json-path $GITHUB_WORKSPACE/json --flatbuffers-path $GITHUB_WORKSPACE/flatbuffers
+          deactivate
+
+      - name: Add vgf_dump to PATH
+        run: echo "${{ github.workspace }}/ai-ml-sdk-vgf-library/build/vgf_dump" >> $GITHUB_PATH
+
+      - name: Checkout plugin repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: vgf_adapter_model_explorer
+
+      - name: Install plugin Python packages
+        run: |
+          cd vgf_adapter_model_explorer
+          python -m venv .venv
+          source .venv/bin/activate
+          python -m pip install .[test]
+          deactivate
+
+      - name: Copy dependencies
+        run: |
+          cd vgf_adapter_model_explorer
+          source .venv/bin/activate
+          find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir -type d -name "__pycache__" -exec rm -rf {} +
+          find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir \( -name "*.d" -o -name "*.td" \) -type f -delete
+          python scripts/replace_symlinks_in_llvm_python_package.py $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir --yes
+          cp -r $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir src/mlir
+          rm src/mlir/_mlir_libs/libMLIRPythonCAPI.so
+          cp $GITHUB_WORKSPACE/ai-ml-sdk-vgf-library/build/vgf_dump/vgf_dump src/vgf_adapter_model_explorer/bin
+          cp $GITHUB_WORKSPACE/llvm-project/build/bin/mlir-translate src/vgf_adapter_model_explorer/bin
+          deactivate
+
+      - name: Run plugin tests
+        run: |
+          cd vgf_adapter_model_explorer
+          source .venv/bin/activate
+          PYTHONPATH=${{ github.workspace }}/llvm-project/build/tools/mlir/python_packages/mlir_core:. pytest --tb=short -v
+          deactivate
+
+      - name: Build wheel
+        run: |
+          cd vgf_adapter_model_explorer
+          source .venv/bin/activate
+          TAG="${{ matrix.python-version }}"
+          TAG="${TAG//./}"
+          echo -e "[bdist_wheel]\npython-tag = py$TAG" > setup.cfg
+          python -m pip install build wheel
+          python -m build
+          deactivate
+
+      - name: Upload wheel artifacts
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: python-wheels-${{ matrix.platform }}-${{ matrix.arch }}-${{ matrix.python-version }}
+          path: vgf_adapter_model_explorer/dist/*.whl
+
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/vgf-adapter-model-explorer
+    permissions:
+      id-token: write
+
+    steps:
+      - uses: getsentry/action-github-app-token@a0061014b82a6a5d6aeeb3b824aced47e3c3a7ef
+        id: get_app_token
+        with:
+          app_id: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
+          private_key: ${{ secrets.ME_REPO_ACCESS_PRIVATE_KEY }}
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.get_app_token.outputs.token }}
+
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@4a4a951bc43fafe41cd2348d181853f52356bee7 # v4.4.2
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: --latest
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
+
+      - name: Download all wheel artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: python-wheels-*
+          path: dist/
+          merge-multiple: true
+
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # release/v1.12.4
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body_path: CHANGELOG.md
+          files: dist/*.whl
+          token: ${{ steps.get_app_token.outputs.token }}
