@@ -4,6 +4,14 @@ VGF Adapter for [google-ai-edge/model-explorer](https://github.com/google-ai-edg
 
 ![node_data](./screenshots/vgf-adapter-readme-screenshot.png)
 
+## Requirements
+
+- Python <3.13, >=3.10
+
+## Supported Platforms
+
+- Linux x86_64
+
 ## Installation
 
 ### pip + PyPI
