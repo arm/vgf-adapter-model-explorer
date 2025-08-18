@@ -78,9 +78,7 @@ jobs:
         uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
         with:
           path: llvm-project/build
-          key:  ${{ matrix.platform }}-python-${{ matrix.python-version }}-llvm-${{ env.LLVM_REF }}
-          restore-keys: |
-            ${{ matrix.platform }}-python-${{ matrix.python-version }}-llvm-
+          key:  ${{ matrix.runner }}-${{ matrix.arch }}-python-${{ matrix.python-version }}-llvm-${{ env.LLVM_REF }}
 
       - name: Build LLVM
         if: ${{ steps.cache-llvm-cc.outputs.cache-hit != 'true' }}
@@ -129,9 +127,7 @@ jobs:
   #       uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
   #       with:
   #         path: flatbuffers
-  #         key: ${{ matrix.platform }}-flatbuffers-${{ env.FLATBUFFERS_REF }}
-  #         restore-keys: |
-  #           ${{ matrix.platform }}-flatbuffers-
+  #         key: ${{ matrix.runner }}-${{ matrix.arch }}-flatbuffers-${{ env.FLATBUFFERS_REF }}
 
   #     - name: Build flatbuffers
   #       if: ${{ steps.cache-flatbuffers-cc.outputs.cache-hit != 'true' }}
@@ -152,9 +148,7 @@ jobs:
   #       uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
   #       with:
   #         path: argparse/build
-  #         key: ${{ matrix.platform }}-argparse-${{ env.ARGPARSE_REF }}
-  #         restore-keys: |
-  #           ${{ matrix.platform }}-argparse-
+  #         key: ${{ matrix.runner }}-${{ matrix.arch }}-argparse-${{ env.ARGPARSE_REF }}
 
   #     - name: Build argparse
   #       if: ${{ steps.cache-argparse-cc.outputs.cache-hit != 'true' }}
@@ -184,9 +178,7 @@ jobs:
   #       uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
   #       with:
   #         path: ai-ml-sdk-vgf-library/build
-  #         key: ${{ matrix.platform }}-vgf-lib-${{ env.VGF_LIB_REF }}
-  #         restore-keys: |
-  #           ${{ matrix.platform }}-vgf-lib-
+  #         key: ${{ matrix.runner }}-${{ matrix.arch }}-vgf-lib-${{ env.VGF_LIB_REF }}
 
   #     - name: Build VGF library
   #       if: ${{ steps.cache-vgf-lib-cc.outputs.cache-hit != 'true' }}
