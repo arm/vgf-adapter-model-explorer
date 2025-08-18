@@ -231,7 +231,7 @@ jobs:
           source .venv/bin/activate
           TAG="${{ matrix.python-version }}"
           TAG="${TAG//./}"
-          echo -e "[bdist_wheel]\npython-tag = cp$TAG" > setup.cfg
+          echo -e "[bdist_wheel]\npython_tag = cp$TAG" > setup.cfg
           python -m pip install build wheel auditwheel
           python -m build
           auditwheel repair --plat ${{ matrix.platform }} dist/*.whl
