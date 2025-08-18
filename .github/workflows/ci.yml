@@ -243,56 +243,56 @@ jobs:
           name: python-wheels-${{ matrix.platform }}-${{ matrix.arch }}-${{ matrix.python-version }}
           path: vgf_adapter_model_explorer/wheelhouse/*.whl
 
-  # release:
-  #   name: Release
-  #   if: startsWith(github.ref, 'refs/tags/')
-  #   needs:
-  #     - build
-  #   runs-on: ubuntu-latest
-  #   environment:
-  #     name: pypi
-  #     url: https://pypi.org/p/vgf-adapter-model-explorer
-  #   permissions:
-  #     id-token: write
+  release:
+    name: Release
+    if: startsWith(github.ref, 'refs/tags/')
+    needs:
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: pypi
+      url: https://pypi.org/p/vgf-adapter-model-explorer
+    permissions:
+      id-token: write
 
-  #   steps:
-  #     - uses: getsentry/action-github-app-token@a0061014b82a6a5d6aeeb3b824aced47e3c3a7ef
-  #       id: get_app_token
-  #       with:
-  #         app_id: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
-  #         private_key: ${{ secrets.ME_REPO_ACCESS_PRIVATE_KEY }}
+    steps:
+      - uses: getsentry/action-github-app-token@a0061014b82a6a5d6aeeb3b824aced47e3c3a7ef
+        id: get_app_token
+        with:
+          app_id: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
+          private_key: ${{ secrets.ME_REPO_ACCESS_PRIVATE_KEY }}
 
-  #     - uses: actions/checkout@v4
-  #       with:
-  #         fetch-depth: 0
-  #         token: ${{ steps.get_app_token.outputs.token }}
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ steps.get_app_token.outputs.token }}
 
-  #     - name: Generate release notes
-  #       uses: orhun/git-cliff-action@4a4a951bc43fafe41cd2348d181853f52356bee7 # v4.4.2
-  #       id: git-cliff
-  #       with:
-  #         config: cliff.toml
-  #         args: --latest
-  #       env:
-  #         OUTPUT: CHANGELOG.md
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #         GITHUB_REPO: ${{ github.repository }}
+      - name: Generate release notes
+        uses: orhun/git-cliff-action@4a4a951bc43fafe41cd2348d181853f52356bee7 # v4.4.2
+        id: git-cliff
+        with:
+          config: cliff.toml
+          args: --latest
+        env:
+          OUTPUT: CHANGELOG.md
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPO: ${{ github.repository }}
 
-  #     - name: Download all wheel artifacts
-  #       uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
-  #       with:
-  #         pattern: python-wheels-*
-  #         path: dist/
-  #         merge-multiple: true
+      - name: Download all wheel artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: python-wheels-*
+          path: dist/
+          merge-multiple: true
 
-  #     - name: Publish distribution to PyPI
-  #       uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # release/v1.12.4
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # release/v1.12.4
 
-  #     - name: Publish GitHub release
-  #       uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
-  #       with:
-  #         tag_name: ${{ github.ref_name }}
-  #         name: ${{ github.ref_name }}
-  #         body_path: CHANGELOG.md
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          body_path: CHANGELOG.md
   #         files: dist/*.whl
   #         token: ${{ steps.get_app_token.outputs.token }}
