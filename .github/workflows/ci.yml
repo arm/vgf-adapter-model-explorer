@@ -109,138 +109,139 @@ jobs:
           cmake --build . --target check-mlir
           deactivate
 
-  #     - name: Strip mlir-translate
-  #       run: strip ${{ github.workspace }}/llvm-project/build/bin/mlir-translate
+      - name: Strip mlir-translate
+        run: strip ${{ github.workspace }}/llvm-project/build/bin/mlir-translate
 
-  #     - name: Add mlir-translate to PATH
-  #       run: echo "${{ github.workspace }}/llvm-project/build/bin" >> "$GITHUB_PATH"
+      - name: Add mlir-translate to PATH
+        run: echo "${{ github.workspace }}/llvm-project/build/bin" >> "$GITHUB_PATH"
 
-  #     - name: Checkout flatbuffers repo
-  #       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-  #       with:
-  #         repository: google/flatbuffers
-  #         path: flatbuffers
-  #         ref: ${{ env.FLATBUFFERS_REF }}
+      - name: Checkout flatbuffers repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: google/flatbuffers
+          path: flatbuffers
+          ref: ${{ env.FLATBUFFERS_REF }}
 
-  #     - name: Set up flatbuffers build cache
-  #       id: cache-flatbuffers-cc
-  #       uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-  #       with:
-  #         path: flatbuffers
-  #         key: ${{ matrix.runner }}-${{ matrix.arch }}-flatbuffers-${{ env.FLATBUFFERS_REF }}
+      - name: Set up flatbuffers build cache
+        id: cache-flatbuffers-cc
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: flatbuffers
+          key: ${{ matrix.runner }}-${{ matrix.arch }}-flatbuffers-${{ env.FLATBUFFERS_REF }}
 
-  #     - name: Build flatbuffers
-  #       if: ${{ steps.cache-flatbuffers-cc.outputs.cache-hit != 'true' }}
-  #       run: |
-  #         cd flatbuffers
-  #         cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
-  #         make -j
+      - name: Build flatbuffers
+        if: ${{ steps.cache-flatbuffers-cc.outputs.cache-hit != 'true' }}
+        run: |
+          cd flatbuffers
+          cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
+          make -j
 
-  #     - name: Checkout argparse repo
-  #       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-  #       with:
-  #         repository: p-ranav/argparse
-  #         path: argparse
-  #         ref: ${{ env.ARGPARSE_REF }}
+      - name: Checkout argparse repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: p-ranav/argparse
+          path: argparse
+          ref: ${{ env.ARGPARSE_REF }}
 
-  #     - name: Set up argparse build cache
-  #       id: cache-argparse-cc
-  #       uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-  #       with:
-  #         path: argparse/build
-  #         key: ${{ matrix.runner }}-${{ matrix.arch }}-argparse-${{ env.ARGPARSE_REF }}
+      - name: Set up argparse build cache
+        id: cache-argparse-cc
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: argparse/build
+          key: ${{ matrix.runner }}-${{ matrix.arch }}-argparse-${{ env.ARGPARSE_REF }}
 
-  #     - name: Build argparse
-  #       if: ${{ steps.cache-argparse-cc.outputs.cache-hit != 'true' }}
-  #       run: |
-  #         cd argparse
-  #         mkdir -p build
-  #         cd build
-  #         cmake -DARGPARSE_BUILD_SAMPLES=on -DARGPARSE_BUILD_TESTS=on ..
-  #         make
+      - name: Build argparse
+        if: ${{ steps.cache-argparse-cc.outputs.cache-hit != 'true' }}
+        run: |
+          cd argparse
+          mkdir -p build
+          cd build
+          cmake -DARGPARSE_BUILD_SAMPLES=on -DARGPARSE_BUILD_TESTS=on ..
+          make
 
-  #     - name: Checkout json repo
-  #       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-  #       with:
-  #         repository: nlohmann/json
-  #         path: json
-  #         ref: ${{ env.JSON_REF }}
+      - name: Checkout json repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: nlohmann/json
+          path: json
+          ref: ${{ env.JSON_REF }}
 
-  #     - name: Checkout VGF library repo
-  #       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-  #       with:
-  #         repository: arm/ai-ml-sdk-vgf-library
-  #         path: ai-ml-sdk-vgf-library
-  #         ref: ${{ env.VGF_LIB_REF }}
+      - name: Checkout VGF library repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          repository: arm/ai-ml-sdk-vgf-library
+          path: ai-ml-sdk-vgf-library
+          ref: ${{ env.VGF_LIB_REF }}
 
-  #     - name: Set up VGF library build cache
-  #       id: cache-vgf-lib-cc
-  #       uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-  #       with:
-  #         path: ai-ml-sdk-vgf-library/build
-  #         key: ${{ matrix.runner }}-${{ matrix.arch }}-vgf-lib-${{ env.VGF_LIB_REF }}
+      - name: Set up VGF library build cache
+        id: cache-vgf-lib-cc
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
+        with:
+          path: ai-ml-sdk-vgf-library/build
+          key: ${{ matrix.runner }}-${{ matrix.arch }}-vgf-lib-${{ env.VGF_LIB_REF }}
 
-  #     - name: Build VGF library
-  #       if: ${{ steps.cache-vgf-lib-cc.outputs.cache-hit != 'true' }}
-  #       run: |
-  #         cd ai-ml-sdk-vgf-library
-  #         python -m venv .venv
-  #         source .venv/bin/activate
-  #         ./scripts/build.py --flatc-path $GITHUB_WORKSPACE/flatbuffers/flatc --argparse-path $GITHUB_WORKSPACE/argparse --json-path $GITHUB_WORKSPACE/json --flatbuffers-path $GITHUB_WORKSPACE/flatbuffers
-  #         deactivate
+      - name: Build VGF library
+        if: ${{ steps.cache-vgf-lib-cc.outputs.cache-hit != 'true' }}
+        run: |
+          cd ai-ml-sdk-vgf-library
+          python -m venv .venv
+          source .venv/bin/activate
+          ./scripts/build.py --flatc-path $GITHUB_WORKSPACE/flatbuffers/flatc --argparse-path $GITHUB_WORKSPACE/argparse --json-path $GITHUB_WORKSPACE/json --flatbuffers-path $GITHUB_WORKSPACE/flatbuffers
+          deactivate
 
-  #     - name: Add vgf_dump to PATH
-  #       run: echo "${{ github.workspace }}/ai-ml-sdk-vgf-library/build/vgf_dump" >> $GITHUB_PATH
+      - name: Add vgf_dump to PATH
+        run: echo "${{ github.workspace }}/ai-ml-sdk-vgf-library/build/vgf_dump" >> $GITHUB_PATH
 
-  #     - name: Checkout plugin repo
-  #       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-  #       with:
-  #         path: vgf_adapter_model_explorer
+      - name: Checkout plugin repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: vgf_adapter_model_explorer
 
-  #     - name: Install plugin Python packages
-  #       run: |
-  #         cd vgf_adapter_model_explorer
-  #         python -m venv .venv
-  #         source .venv/bin/activate
-  #         python -m pip install .[test]
-  #         deactivate
+      - name: Install plugin Python packages
+        run: |
+          cd vgf_adapter_model_explorer
+          python -m venv .venv
+          source .venv/bin/activate
+          python -m pip install .[test]
+          deactivate
 
-  #     - name: Copy dependencies
-  #       run: |
-  #         cd vgf_adapter_model_explorer
-  #         source .venv/bin/activate
-  #         find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir -type d -name "__pycache__" -exec rm -rf {} +
-  #         find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir \( -name "*.d" -o -name "*.td" \) -type f -delete
-  #         python scripts/replace_symlinks_in_llvm_python_package.py $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir --yes
-  #         cp -r $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir src/mlir
-  #         rm src/mlir/_mlir_libs/libMLIRPythonCAPI.so
-  #         cp $GITHUB_WORKSPACE/ai-ml-sdk-vgf-library/build/vgf_dump/vgf_dump src/vgf_adapter_model_explorer/bin
-  #         cp $GITHUB_WORKSPACE/llvm-project/build/bin/mlir-translate src/vgf_adapter_model_explorer/bin
-  #         deactivate
+      - name: Copy dependencies
+        run: |
+          cd vgf_adapter_model_explorer
+          source .venv/bin/activate
+          find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir -type d -name "__pycache__" -exec rm -rf {} +
+          find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir \( -name "*.d" -o -name "*.td" \) -type f -delete
+          python scripts/replace_symlinks_in_llvm_python_package.py $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir --yes
+          cp -r $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir src/mlir
+          rm src/mlir/_mlir_libs/libMLIRPythonCAPI.so
+          cp $GITHUB_WORKSPACE/ai-ml-sdk-vgf-library/build/vgf_dump/vgf_dump src/vgf_adapter_model_explorer/bin
+          cp $GITHUB_WORKSPACE/llvm-project/build/bin/mlir-translate src/vgf_adapter_model_explorer/bin
+          deactivate
 
-  #     - name: Run plugin tests
-  #       run: |
-  #         cd vgf_adapter_model_explorer
-  #         source .venv/bin/activate
-  #         PYTHONPATH=${{ github.workspace }}/llvm-project/build/tools/mlir/python_packages/mlir_core:. pytest --tb=short -v
-  #         deactivate
+      - name: Run plugin tests
+        run: |
+          cd vgf_adapter_model_explorer
+          source .venv/bin/activate
+          PYTHONPATH=${{ github.workspace }}/llvm-project/build/tools/mlir/python_packages/mlir_core:. pytest --tb=short -v
+          deactivate
 
-  #     - name: Build wheel
-  #       run: |
-  #         cd vgf_adapter_model_explorer
-  #         source .venv/bin/activate
-  #         TAG="${{ matrix.python-version }}"
-  #         TAG="${TAG//./}"
-  #         echo -e "[bdist_wheel]\npython-tag = cp$TAG" > setup.cfg
-  #         python -m pip install build wheel
-  #         python -m build
-  #         deactivate
+      - name: Build wheel
+        run: |
+          cd vgf_adapter_model_explorer
+          source .venv/bin/activate
+          TAG="${{ matrix.python-version }}"
+          TAG="${TAG//./}"
+          echo -e "[bdist_wheel]\npython-tag = cp$TAG" > setup.cfg
+          python -m pip install build wheel auditwheel
+          python -m build
+          auditwheel repair --plat ${{ matrix.platform }} dist/*.whl
+          deactivate
 
-  #     - name: Upload wheel artifacts
-  #       uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
-  #       with:
-  #         name: python-wheels-${{ matrix.platform }}-${{ matrix.arch }}-${{ matrix.python-version }}
-  #         path: vgf_adapter_model_explorer/dist/*.whl
+      - name: Upload wheel artifacts
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: python-wheels-${{ matrix.platform }}-${{ matrix.arch }}-${{ matrix.python-version }}
+          path: vgf_adapter_model_explorer/wheelhouse/*.whl
 
   # release:
   #   name: Release
