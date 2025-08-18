@@ -294,5 +294,5 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
           body_path: CHANGELOG.md
-  #         files: dist/*.whl
-  #         token: ${{ steps.get_app_token.outputs.token }}
+          files: dist/*.whl
+          token: ${{ steps.get_app_token.outputs.token }}
