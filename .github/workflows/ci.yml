@@ -20,26 +20,26 @@ jobs:
       fail-fast: false
       matrix:
        include:
-          # - python-version: "3.12"
-          #   runner: ubuntu-22.04
-          #   platform: linux_x86_64
-          #   arch: x64
-          # - python-version: "3.11"
-          #   runner: ubuntu-22.04
-          #   platform: linux_x86_64
-          #   arch: x64
-          # - python-version: "3.10"
-          #   runner: ubuntu-22.04
-          #   platform: linux_x86_64
-          #   arch: x64
-          # - python-version: "3.12"
-          #   runner: ubuntu-22.04-arm
-          #   platform: linux_aarch64
-          #   arch: arm64
-          # - python-version: "3.11"
-          #   runner: ubuntu-22.04-arm
-          #   platform: linux_aarch64
-          #   arch: arm64
+          - python-version: "3.12"
+            runner: ubuntu-22.04
+            platform: manylinux_2_35_x86_64
+            arch: x64
+          - python-version: "3.11"
+            runner: ubuntu-22.04
+            platform: manylinux_2_35_x86_64
+            arch: x64
+          - python-version: "3.10"
+            runner: ubuntu-22.04
+            platform: manylinux_2_35_x86_64
+            arch: x64
+          - python-version: "3.12"
+            runner: ubuntu-22.04-arm
+            platform: manylinux_2_35_aarch64
+            arch: arm64
+          - python-version: "3.11"
+            runner: ubuntu-22.04-arm
+            platform: manylinux_2_35_aarch64
+            arch: arm64
           - python-version: "3.10"
             runner: ubuntu-22.04-arm
             platform: manylinux_2_35_aarch64
@@ -47,7 +47,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Get app token
-        uses: getsentry/action-github-app-token@d4b5da6c5e37703f8c3b3e43abb5705b46e159cc # v3.0.0
+        uses: getsentry/action-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
         id: get_app_token
         with:
           app_id: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
@@ -256,7 +256,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: getsentry/action-github-app-token@a0061014b82a6a5d6aeeb3b824aced47e3c3a7ef
+      - uses: getsentry/action-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b #v2.1.1
         id: get_app_token
         with:
           app_id: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
