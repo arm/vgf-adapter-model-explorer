@@ -1,4 +1,4 @@
-name: Model Explorer VGF Plugin CI
+name: VGF Adapter for Model Explorer CI
 on:
   push:
     branches: ["main"]
