@@ -19,31 +19,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-       include:
-          - python-version: "3.12"
-            runner: ubuntu-22.04
+        python-version: ["3.10", "3.11", "3.12"]
+        runner: ["ubuntu-22.04", "ubuntu-22.04-arm"]
+        include:
+          - runner: "ubuntu-22.04"
             platform: manylinux_2_35_x86_64
             arch: x64
-          - python-version: "3.11"
-            runner: ubuntu-22.04
-            platform: manylinux_2_35_x86_64
-            arch: x64
-          - python-version: "3.10"
-            runner: ubuntu-22.04
-            platform: manylinux_2_35_x86_64
-            arch: x64
-          - python-version: "3.12"
-            runner: ubuntu-22.04-arm
+          - runner: "ubuntu-22.04-arm"
             platform: manylinux_2_35_aarch64
-            arch: arm64
-          - python-version: "3.11"
-            runner: ubuntu-22.04-arm
-            platform: manylinux_2_35_aarch64
-            arch: arm64
-          - python-version: "3.10"
-            runner: ubuntu-22.04-arm
-            platform: manylinux_2_35_aarch64
-            arch: arm64
+            arch: arm64      
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Get app token
