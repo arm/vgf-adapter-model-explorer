@@ -47,7 +47,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - name: Get app token
-        uses: getsentry/action-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b # v2.1.1
+        uses: getsentry/action-github-app-token@d4b5da6c5e37703f8c3b3e43abb5705b46e159cc # v3.0.0
         id: get_app_token
         with:
           app_id: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
@@ -256,7 +256,7 @@ jobs:
       id-token: write
 
     steps:
-      - uses: getsentry/action-github-app-token@a8d616148505b5069dccd32f177bb87d7f39123b #v2.1.1
+      - uses: getsentry/action-github-app-token@d4b5da6c5e37703f8c3b3e43abb5705b46e159cc #v3.0.0
         id: get_app_token
         with:
           app_id: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
