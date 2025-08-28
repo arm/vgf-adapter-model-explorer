@@ -42,6 +42,11 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
+      - name: Checkout plugin repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          path: vgf_adapter_model_explorer
+
       - name: Checkout Model Converter repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -49,7 +54,17 @@ jobs:
           path: ai-ml-sdk-model-converter
           ref: ${{ env.MODEL_CONVERTER_REF }}
 
+      - name: Restore LLVM build cache
+        id: cache-llvm-restore
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            llvm-project/build/bin/mlir-translate
+            llvm-project/build/tools/mlir/python_packages/mlir_core
+          key: ${{ matrix.runner }}-${{ matrix.arch }}-python-${{ matrix.python-version }}-llvm-${{ env.LLVM_REF }}
+
       - name: Checkout LLVM repo
+        if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: llvm/llvm-project
@@ -57,15 +72,8 @@ jobs:
           token: ${{ steps.get_app_token.outputs.token }}
           ref: ${{ env.LLVM_REF }}
 
-      - name: Set up LLVM CMake build cache
-        id: cache-llvm-cc
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
-        with:
-          path: llvm-project/build
-          key:  ${{ matrix.runner }}-${{ matrix.arch }}-python-${{ matrix.python-version }}-llvm-${{ env.LLVM_REF }}
-
       - name: Build LLVM
-        if: ${{ steps.cache-llvm-cc.outputs.cache-hit != 'true' }}
+        if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
         run: |
           cd llvm-project
           python -m venv .venv
@@ -94,7 +102,27 @@ jobs:
           deactivate
 
       - name: Strip mlir-translate
+        if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
         run: strip ${{ github.workspace }}/llvm-project/build/bin/mlir-translate
+
+      - name: Reduce MLIR Python bindings
+        if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
+        run: |
+          cd vgf_adapter_model_explorer
+          find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir -type d -name "__pycache__" -exec rm -rf {} +
+          find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir \( -name "*.d" -o -name "*.td" \) -type f -delete
+          python scripts/replace_symlinks_in_llvm_python_package.py $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir --yes
+          rm $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir/_mlir_libs/libMLIRPythonCAPI.so
+
+      - name: Save LLVM build cache
+        if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
+        id: cache-llvm-save
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            llvm-project/build/bin/mlir-translate
+            llvm-project/build/tools/mlir/python_packages/mlir_core
+          key: ${{ steps.cache-llvm-restore.outputs.cache-primary-key }}
 
       - name: Add mlir-translate to PATH
         run: echo "${{ github.workspace }}/llvm-project/build/bin" >> "$GITHUB_PATH"
@@ -176,11 +204,6 @@ jobs:
       - name: Add vgf_dump to PATH
         run: echo "${{ github.workspace }}/ai-ml-sdk-vgf-library/build/vgf_dump" >> $GITHUB_PATH
 
-      - name: Checkout plugin repo
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-        with:
-          path: vgf_adapter_model_explorer
-
       - name: Install plugin Python packages
         run: |
           cd vgf_adapter_model_explorer
@@ -193,11 +216,7 @@ jobs:
         run: |
           cd vgf_adapter_model_explorer
           source .venv/bin/activate
-          find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir -type d -name "__pycache__" -exec rm -rf {} +
-          find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir \( -name "*.d" -o -name "*.td" \) -type f -delete
-          python scripts/replace_symlinks_in_llvm_python_package.py $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir --yes
           cp -r $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir src/mlir
-          rm src/mlir/_mlir_libs/libMLIRPythonCAPI.so
           cp $GITHUB_WORKSPACE/ai-ml-sdk-vgf-library/build/vgf_dump/vgf_dump src/vgf_adapter_model_explorer/bin
           cp $GITHUB_WORKSPACE/llvm-project/build/bin/mlir-translate src/vgf_adapter_model_explorer/bin
           deactivate
