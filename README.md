@@ -2,7 +2,7 @@
 
 VGF Adapter for [google-ai-edge/model-explorer](https://github.com/google-ai-edge/model-explorer) that enables visualization of VGF files from the [Arm ML SDK for Vulkan®](https://github.com/arm/ai-ml-sdk-for-vulkan).
 
-![node_data](./screenshots/vgf-adapter-readme-screenshot.png)
+![](https://raw.githubusercontent.com/arm/vgf-adapter-model-explorer/main/screenshots/vgf-adapter-readme-screenshot.png)
 
 ## Requirements
 
