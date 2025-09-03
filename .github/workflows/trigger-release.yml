@@ -1,10 +1,17 @@
 name: Trigger Release
 
+# Release flow:
+# - Run *this* workflow from the internal repository.
+# - This will create and push a version bump commit and tag it.
+# - ci.yml's sync job will trigger and sync both the commit and tag to the external repository.
+# - The tag push will trigger the external repository's release job.
+
 on:
   workflow_dispatch:
 
 jobs:
   tag-new-release:
+    if: github.repository_owner != 'arm'
     runs-on: ubuntu-latest
     steps:
       # We want our tag push at the end to trigger a workflow. We can't do that using repository's GITHUB_TOKEN.
