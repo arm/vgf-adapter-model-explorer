@@ -73,8 +73,7 @@ runs:
         path: |
           llvm-project/build/bin/mlir-translate
           llvm-project/build/tools/mlir/python_packages/mlir_core
-        key: ${{ inputs.runner }}-${{ inputs.arch }}-python-${{ inputs.python-version }}-llvm-${{ inputs.llvm-ref }}
-
+        key: ${{ inputs.runner }}-${{ inputs.arch }}-python-${{ inputs.python-version }}-llvm-${{ inputs.llvm-ref }}-model-converter-${{ inputs.model-converter-ref }}
     - name: Checkout LLVM repo
       if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
