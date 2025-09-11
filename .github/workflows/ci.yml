@@ -166,4 +166,4 @@ jobs:
           cd target-repo
           git remote add source ${{ github.server_url }}/${{ github.repository }}
           git fetch source --tags
-          git push origin 'refs/tags/v*.*.*'
+          git push origin ${{ github.ref_name }}
