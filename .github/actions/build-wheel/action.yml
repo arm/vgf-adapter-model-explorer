@@ -66,14 +66,15 @@ runs:
         path: ai-ml-sdk-model-converter
         ref: ${{ inputs.model-converter-ref }}
 
-    - name: Restore LLVM build cache
-      id: cache-llvm-restore
-      uses: actions/cache/restore@v4
-      with:
-        path: |
-          llvm-project/build/bin/mlir-translate
-          llvm-project/build/tools/mlir/python_packages/mlir_core
-        key: ${{ inputs.runner }}-${{ inputs.arch }}-python-${{ inputs.python-version }}-llvm-${{ inputs.llvm-ref }}-model-converter-${{ inputs.model-converter-ref }}
+    # - name: Restore LLVM build cache
+    #   id: cache-llvm-restore
+    #   uses: actions/cache/restore@v4
+    #   with:
+    #     path: |
+    #       llvm-project/build/bin/mlir-translate
+    #       llvm-project/build/tools/mlir/python_packages/mlir_core
+    #     key: ${{ inputs.runner }}-${{ inputs.arch }}-python-${{ inputs.python-version }}-llvm-${{ inputs.llvm-ref }}-model-converter-${{ inputs.model-converter-ref }}
+    
     - name: Checkout LLVM repo
       if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -129,15 +130,15 @@ runs:
         python scripts/replace_symlinks_in_llvm_python_package.py $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir --yes
         rm $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir/_mlir_libs/libMLIRPythonCAPI.so
 
-    - name: Save LLVM build cache
-      if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
-      id: cache-llvm-save
-      uses: actions/cache/save@v4
-      with:
-        path: |
-          llvm-project/build/bin/mlir-translate
-          llvm-project/build/tools/mlir/python_packages/mlir_core
-        key: ${{ steps.cache-llvm-restore.outputs.cache-primary-key }}
+    # - name: Save LLVM build cache
+    #   if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
+    #   id: cache-llvm-save
+    #   uses: actions/cache/save@v4
+    #   with:
+    #     path: |
+    #       llvm-project/build/bin/mlir-translate
+    #       llvm-project/build/tools/mlir/python_packages/mlir_core
+    #     key: ${{ steps.cache-llvm-restore.outputs.cache-primary-key }}
 
     - name: Add mlir-translate to PATH
       shell: bash
