@@ -111,8 +111,7 @@ runs:
             -DLLVM_ENABLE_TERMINFO=OFF \
             -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
             -DPython3_EXECUTABLE=$(which python)
-        cmake --build . --target mlir-translate
-        cmake --build . --target tools/mlir/python_packages/mlir_core
+        cmake --build . --target mlir-translate --target MLIRPythonModules --parallel $(nproc)
         deactivate
 
     - name: Strip mlir-translate
