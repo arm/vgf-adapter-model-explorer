@@ -13,7 +13,7 @@ name = "vgf-adapter-model-explorer"
 version = "0.2.0"
 description = "Adapter for ai-edge-model-explorer to support VGF files"
 readme = "README.md"
-requires-python = ">=3.10, <3.13"
+requires-python = ">=3.10, <3.14"
 keywords = ["model-explorer", "vgf", "visualization"]
 license = "Apache-2.0"
 
@@ -24,10 +24,11 @@ classifiers = [
   "Programming Language :: Python :: 3.10",
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
 ]
 
 dependencies = [
-  "ai-edge-model-explorer"
+  "ai-edge-model-explorer>=0.1.26,<0.2.0"
 ]
 
 [project.urls]

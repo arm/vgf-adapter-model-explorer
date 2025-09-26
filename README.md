@@ -6,7 +6,7 @@ VGF Adapter for [google-ai-edge/model-explorer](https://github.com/google-ai-edg
 
 ## Requirements
 
-- Python <3.13, >=3.10
+- Python >=3.10, <3.14
 
 ## Supported Platforms
 
