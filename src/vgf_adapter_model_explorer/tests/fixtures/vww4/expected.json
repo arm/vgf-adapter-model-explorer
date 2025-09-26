@@ -25,6 +25,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":15:10)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 1, 0, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[2, 2]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -198,6 +218,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":25:10)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -371,6 +411,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":35:10)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -544,6 +604,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":45:10)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -717,6 +797,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":55:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -890,6 +990,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":65:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -1063,6 +1183,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":75:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -1236,6 +1376,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":85:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -1409,6 +1569,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":95:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -1582,6 +1762,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":105:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -1755,6 +1955,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":115:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 1, 0, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[2, 2]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -1928,6 +2148,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":125:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -2101,6 +2341,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":135:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -2274,6 +2534,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":145:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -2447,6 +2727,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":155:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -2620,6 +2920,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":165:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -2793,6 +3113,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":175:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -2966,6 +3306,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":185:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -3139,6 +3499,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":195:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -3312,6 +3692,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":205:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -3560,6 +3960,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":218:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -3733,6 +4153,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":228:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -3906,6 +4346,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":238:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -4140,6 +4600,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":249:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -4313,6 +4793,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":259:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -4486,6 +4986,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":269:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -4659,6 +5179,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":279:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 1, 0, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[2, 2]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -4832,6 +5372,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":289:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -5005,6 +5565,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":299:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -5178,6 +5758,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":309:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -5351,6 +5951,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":319:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -5524,6 +6144,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":329:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -5697,6 +6337,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":339:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -5870,6 +6530,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":349:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -6043,6 +6723,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":359:11)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -6216,6 +6916,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":369:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -6464,6 +7184,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":382:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -6637,6 +7377,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":392:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -6810,6 +7570,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":402:11)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -7044,6 +7824,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":413:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -7217,6 +8017,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":423:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -7390,6 +8210,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":433:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -7563,6 +8403,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":443:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -7736,6 +8596,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":453:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -7909,6 +8789,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":463:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -8082,6 +8982,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":473:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -8330,6 +9250,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":486:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -8503,6 +9443,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":496:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -8676,6 +9636,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":506:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -8910,6 +9890,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":517:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -9083,6 +10083,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":527:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -9256,6 +10276,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":537:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -9429,6 +10469,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":547:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 1, 0, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[2, 2]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -9602,6 +10662,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":557:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -9775,6 +10855,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":567:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -9948,6 +11048,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":577:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -10121,6 +11241,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":587:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -10294,6 +11434,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":597:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -10467,6 +11627,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":607:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -10640,6 +11820,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":617:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -10813,6 +12013,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":627:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -10986,6 +12206,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":637:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -11234,6 +12474,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":650:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -11407,6 +12667,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":660:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -11580,6 +12860,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":670:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -11814,6 +13114,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":681:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -11987,6 +13307,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":691:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -12160,6 +13500,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":701:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -12333,6 +13693,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":711:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -12506,6 +13886,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":721:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -12679,6 +14079,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":731:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -12852,6 +14272,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":741:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -13100,6 +14540,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":754:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -13273,6 +14733,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":764:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -13446,6 +14926,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":774:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -13680,6 +15180,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":785:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -13853,6 +15373,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":795:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -14026,6 +15566,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":805:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -14199,6 +15759,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":815:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -14372,6 +15952,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":825:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -14545,6 +16145,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":835:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -14718,6 +16338,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":845:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -14966,6 +16606,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":858:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -15139,6 +16799,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":868:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -15312,6 +16992,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":878:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -15546,6 +17246,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":889:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -15719,6 +17439,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":899:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -15892,6 +17632,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":909:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -16065,6 +17825,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":919:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -16238,6 +18018,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":929:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -16411,6 +18211,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":939:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -16584,6 +18404,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":949:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -16757,6 +18597,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":959:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -16930,6 +18790,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":969:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -17103,6 +18983,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":979:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -17276,6 +19176,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":989:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -17449,6 +19369,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":999:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -17622,6 +19562,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1009:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -17795,6 +19755,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1019:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -17968,6 +19948,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1029:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -18141,6 +20141,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1039:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -18375,6 +20395,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1050:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -18548,6 +20588,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1060:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -18721,6 +20781,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1070:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -18894,6 +20974,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1080:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -19067,6 +21167,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1090:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -19240,6 +21360,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1100:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -19413,6 +21553,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1110:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -19661,6 +21821,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1123:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -19834,6 +22014,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1133:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -20007,6 +22207,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1143:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -20241,6 +22461,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1154:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -20414,6 +22654,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1164:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -20587,6 +22847,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1174:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -20760,6 +23040,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1184:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 1, 0, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[2, 2]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -20933,6 +23233,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1194:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -21106,6 +23426,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1204:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -21279,6 +23619,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1214:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -21452,6 +23812,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1224:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -21625,6 +24005,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1234:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -21798,6 +24198,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1244:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -21971,6 +24391,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1254:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -22144,6 +24584,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1264:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -22317,6 +24777,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1274:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -22490,6 +24970,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1284:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -22663,6 +25163,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1294:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -22836,6 +25356,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1304:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -23070,6 +25610,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1315:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -23243,6 +25803,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1325:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -23416,6 +25996,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1335:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -23589,6 +26189,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1345:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -23762,6 +26382,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1355:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -23935,6 +26575,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1365:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -24108,6 +26768,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1375:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -24356,6 +27036,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1388:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -24529,6 +27229,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1398:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -24702,6 +27422,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1408:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -24936,6 +27676,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1419:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "false"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -25109,6 +27869,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1429:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -25282,6 +28062,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1439:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -25455,6 +28255,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1449:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[1, 1, 1, 1]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -25628,6 +28448,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1459:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -25801,6 +28641,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1469:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -25974,6 +28834,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1479:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -26147,6 +29027,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1489:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -26320,6 +29220,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1499:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -26493,6 +29413,22 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1506:12)"
+            },
+            {
+              "key": "kernel",
+              "value": "[4, 4]"
+            },
+            {
+              "key": "stride",
+              "value": "[4, 4]"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
             }
           ],
           "incomingEdges": [
@@ -26624,6 +29560,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1516:12)"
+            },
+            {
+              "key": "pad",
+              "value": "[0, 0, 0, 0]"
+            },
+            {
+              "key": "stride",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "dilation",
+              "value": "[1, 1]"
+            },
+            {
+              "key": "acc_type",
+              "value": "INT32"
+            },
+            {
+              "key": "local_bound",
+              "value": "false"
             }
           ],
           "incomingEdges": [
@@ -26797,6 +29753,26 @@
             {
               "key": "loc",
               "value": "loc(\"-\":1526:12)"
+            },
+            {
+              "key": "scale32",
+              "value": "true"
+            },
+            {
+              "key": "rounding_mode",
+              "value": "DOUBLE_ROUND"
+            },
+            {
+              "key": "per_channel",
+              "value": "true"
+            },
+            {
+              "key": "input_unsigned",
+              "value": "false"
+            },
+            {
+              "key": "output_unsigned",
+              "value": "false"
             }
           ],
           "incomingEdges": [

@@ -4,15 +4,16 @@
 # Licensed under the Apache License v2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for license information.
 
-from typing import (
-    Dict,
-    List,
-)
+from typing import Any, Dict, List, Optional
 
+import numpy as np
 from mlir import ir
 from model_explorer import graph_builder as gb
 
 from . import constants as cn
+
+ATTRIBUTE_PREFIX = "attribute"
+ENUM_SUFFIX = "_t"
 
 
 def is_terminator(operation: ir.Operation) -> bool:
@@ -48,6 +49,97 @@ def add_operation_attrs(node: gb.GraphNode, op: ir.Operation) -> None:
     node_attrs.append(gb.KeyValue(key="loc", value=str(op.location)))
 
     node.attrs.extend(node_attrs)
+
+
+def extract_enum_attribute(
+    attribute: ir.Attribute, enum_values: List[str]
+) -> Optional[str]:
+    """
+    Maps an integer enum attribute value to its name using the TOSA spec enum list.
+    TOSA enums are 1-indexed.
+    """
+    if not ir.IntegerAttr.isinstance(attribute):
+        return None
+    index = int(ir.IntegerAttr(attribute)) - 1
+    return enum_values[index] if 0 <= index < len(enum_values) else None
+
+
+# pyright: reportAttributeAccessIssue=false, reportArgumentType=false
+def extract_tensor_values(
+    attribute: ir.Attribute, shaped_type: ir.ShapedType
+) -> List[Any]:
+    """Materialize Tensor to Python lists (handles splat/non-splat)."""
+    is_dense = ir.DenseElementsAttr.isinstance(attribute)
+    if is_dense and not attribute.is_splat:
+        values = list(attribute)
+    else:
+        v = (
+            attribute.get_splat_value().value
+            if is_dense
+            else getattr(attribute, "value", attribute)
+        )
+        values = np.full(shaped_type.shape, v).tolist()
+    return values
+
+
+def get_tosa_attribute_value(
+    operand: ir.Value,
+    operand_value: ir.Attribute,
+    enum_values: Optional[List[str]] = None,
+) -> str:
+    """Get attribute value for a given operand."""
+    if enum_values:
+        mapped = extract_enum_attribute(operand_value, enum_values)
+        return mapped if mapped is not None else str(operand_value)
+
+    if ir.ShapedType.isinstance(operand.type) and str(operand.type).startswith(
+        "!spirv.arm.tensor"
+    ):
+        return str(
+            extract_tensor_values(operand_value, ir.ShapedType(operand.type))
+        )
+
+    return str(operand_value)
+
+
+def get_operands_info(op_name: str) -> Optional[List[Dict[str, Any]]]:
+    """Get operand info for a given operation."""
+    normalised_operation_name = op_name.split(".")[-1].lower()
+    operands_info = cn.TOSA_OPERAND_INFO["operations"].get(
+        normalised_operation_name
+    )
+    return operands_info if operands_info else None
+
+
+def add_tosa_operation_attrs(node: gb.GraphNode, op: ir.Operation) -> None:
+    """Annotate graph node with TOSA operation attributes."""
+    operands_info = get_operands_info(op.name)
+    if not operands_info:
+        return
+
+    tosa_attrs: List[gb.KeyValue] = []
+    for operand, operand_info in zip(op.operands, operands_info, strict=False):
+        if not operand_info["category"].startswith(ATTRIBUTE_PREFIX):
+            continue
+        operation_attributes = operand.owner.attributes
+
+        if "value" not in operation_attributes:
+            continue
+
+        attribute_name = operand_info["name"]
+        enum_key = f"{attribute_name}{ENUM_SUFFIX}"
+        enum_values = cn.TOSA_OPERAND_INFO["enums"].get(enum_key)
+
+        tosa_attrs.append(
+            gb.KeyValue(
+                key=attribute_name,
+                value=get_tosa_attribute_value(
+                    operand, operation_attributes["value"], enum_values
+                ),
+            )
+        )
+
+    node.attrs.extend(tosa_attrs)
 
 
 def add_incoming_edges(
@@ -137,6 +229,7 @@ def create_node(
     traversed_ops[operation] = node.id
 
     add_operation_attrs(node, operation)
+    add_tosa_operation_attrs(node, operation)
     add_incoming_edges(node, operation, traversed_ops)
     add_inputs_metadata(node, operation)
     add_outputs_metadata(node, operation)

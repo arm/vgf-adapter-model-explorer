@@ -1,0 +1,902 @@
+{
+  "enums": {
+    "acc_type_t": [
+      "INT32",
+      "FP16",
+      "FP32",
+      "INT48"
+    ],
+    "nan_propagation_mode_t": [
+      "PROPAGATE",
+      "IGNORE"
+    ],
+    "resize_mode_t": [
+      "NEAREST_NEIGHBOR",
+      "BILINEAR"
+    ],
+    "rounding_mode_t": [
+      "SINGLE_ROUND",
+      "INEXACT_ROUND",
+      "DOUBLE_ROUND"
+    ],
+    "var_t": [
+      "BOOLEAN",
+      "INT8",
+      "INT16",
+      "INT32",
+      "FP16",
+      "BF16",
+      "FP32"
+    ]
+  },
+  "operations": {
+    "abs": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "add": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "argmax": [
+      {
+        "category": "attribute",
+        "name": "axis"
+      },
+      {
+        "category": "attribute",
+        "name": "nan_mode"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "arithmeticrightshift": [
+      {
+        "category": "attribute",
+        "name": "round"
+      },
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "avgpool2d": [
+      {
+        "category": "attribute",
+        "name": "kernel"
+      },
+      {
+        "category": "attribute",
+        "name": "stride"
+      },
+      {
+        "category": "attribute",
+        "name": "pad"
+      },
+      {
+        "category": "attribute",
+        "name": "acc_type"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      },
+      {
+        "category": "input",
+        "name": "input_zp"
+      },
+      {
+        "category": "input",
+        "name": "output_zp"
+      }
+    ],
+    "bitwiseand": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "bitwisenot": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "bitwiseor": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "bitwisexor": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "cast": [
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "ceil": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "clamp": [
+      {
+        "category": "attribute",
+        "name": "min_val"
+      },
+      {
+        "category": "attribute",
+        "name": "max_val"
+      },
+      {
+        "category": "attribute",
+        "name": "nan_mode"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "clz": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "concat": [
+      {
+        "category": "attribute",
+        "name": "axis"
+      },
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "conv2d": [
+      {
+        "category": "attribute",
+        "name": "pad"
+      },
+      {
+        "category": "attribute",
+        "name": "stride"
+      },
+      {
+        "category": "attribute",
+        "name": "dilation"
+      },
+      {
+        "category": "attribute",
+        "name": "acc_type"
+      },
+      {
+        "category": "attribute",
+        "name": "local_bound"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      },
+      {
+        "category": "input",
+        "name": "weight"
+      },
+      {
+        "category": "input",
+        "name": "bias"
+      },
+      {
+        "category": "input",
+        "name": "input_zp"
+      },
+      {
+        "category": "input",
+        "name": "weight_zp"
+      }
+    ],
+    "conv3d": [
+      {
+        "category": "attribute",
+        "name": "pad"
+      },
+      {
+        "category": "attribute",
+        "name": "stride"
+      },
+      {
+        "category": "attribute",
+        "name": "dilation"
+      },
+      {
+        "category": "attribute",
+        "name": "acc_type"
+      },
+      {
+        "category": "attribute",
+        "name": "local_bound"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      },
+      {
+        "category": "input",
+        "name": "weight"
+      },
+      {
+        "category": "input",
+        "name": "bias"
+      },
+      {
+        "category": "input",
+        "name": "input_zp"
+      },
+      {
+        "category": "input",
+        "name": "weight_zp"
+      }
+    ],
+    "cos": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "depthwiseconv2d": [
+      {
+        "category": "attribute",
+        "name": "pad"
+      },
+      {
+        "category": "attribute",
+        "name": "stride"
+      },
+      {
+        "category": "attribute",
+        "name": "dilation"
+      },
+      {
+        "category": "attribute",
+        "name": "acc_type"
+      },
+      {
+        "category": "attribute",
+        "name": "local_bound"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      },
+      {
+        "category": "input",
+        "name": "weight"
+      },
+      {
+        "category": "input",
+        "name": "bias"
+      },
+      {
+        "category": "input",
+        "name": "input_zp"
+      },
+      {
+        "category": "input",
+        "name": "weight_zp"
+      }
+    ],
+    "equal": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "erf": [
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "exp": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "fft2d": [
+      {
+        "category": "attribute",
+        "name": "inverse"
+      },
+      {
+        "category": "attribute",
+        "name": "local_bound"
+      },
+      {
+        "category": "input",
+        "name": "input_real"
+      },
+      {
+        "category": "input",
+        "name": "input_imag"
+      }
+    ],
+    "floor": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "gather": [
+      {
+        "category": "input",
+        "name": "values"
+      },
+      {
+        "category": "input",
+        "name": "indices"
+      }
+    ],
+    "greater": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "greaterequal": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "intdiv": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "log": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "logicaland": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "logicalleftshift": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "logicalnot": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "logicalor": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "logicalrightshift": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "logicalxor": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "matmul": [
+      {
+        "category": "input",
+        "name": "A"
+      },
+      {
+        "category": "input",
+        "name": "B"
+      },
+      {
+        "category": "input",
+        "name": "A_zp"
+      },
+      {
+        "category": "input",
+        "name": "B_zp"
+      }
+    ],
+    "maximum": [
+      {
+        "category": "attribute",
+        "name": "nan_mode"
+      },
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "maxpool2d": [
+      {
+        "category": "attribute",
+        "name": "kernel"
+      },
+      {
+        "category": "attribute",
+        "name": "stride"
+      },
+      {
+        "category": "attribute",
+        "name": "pad"
+      },
+      {
+        "category": "attribute",
+        "name": "nan_mode"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "minimum": [
+      {
+        "category": "attribute",
+        "name": "nan_mode"
+      },
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "mul": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      },
+      {
+        "category": "input",
+        "name": "shift"
+      }
+    ],
+    "negate": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input1_zp"
+      },
+      {
+        "category": "input",
+        "name": "output_zp"
+      }
+    ],
+    "pad": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "padding"
+      },
+      {
+        "category": "input",
+        "name": "pad_const"
+      }
+    ],
+    "pow": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "reciprocal": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "reduceall": [
+      {
+        "category": "attribute",
+        "name": "axis"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "reduceany": [
+      {
+        "category": "attribute",
+        "name": "axis"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "reducemax": [
+      {
+        "category": "attribute",
+        "name": "axis"
+      },
+      {
+        "category": "attribute",
+        "name": "nan_mode"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "reducemin": [
+      {
+        "category": "attribute",
+        "name": "axis"
+      },
+      {
+        "category": "attribute",
+        "name": "nan_mode"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "reduceproduct": [
+      {
+        "category": "attribute",
+        "name": "axis"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "reducesum": [
+      {
+        "category": "attribute",
+        "name": "axis"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "rescale": [
+      {
+        "category": "attribute",
+        "name": "scale32"
+      },
+      {
+        "category": "attribute",
+        "name": "rounding_mode"
+      },
+      {
+        "category": "attribute",
+        "name": "per_channel"
+      },
+      {
+        "category": "attribute",
+        "name": "input_unsigned"
+      },
+      {
+        "category": "attribute",
+        "name": "output_unsigned"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      },
+      {
+        "category": "input",
+        "name": "multiplier"
+      },
+      {
+        "category": "input",
+        "name": "shift"
+      },
+      {
+        "category": "input",
+        "name": "input_zp"
+      },
+      {
+        "category": "input",
+        "name": "output_zp"
+      }
+    ],
+    "reshape": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "shape"
+      }
+    ],
+    "resize": [
+      {
+        "category": "attribute",
+        "name": "mode"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      },
+      {
+        "category": "input",
+        "name": "scale"
+      },
+      {
+        "category": "input",
+        "name": "offset"
+      },
+      {
+        "category": "input",
+        "name": "border"
+      }
+    ],
+    "reverse": [
+      {
+        "category": "attribute",
+        "name": "axis"
+      },
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "rfft2d": [
+      {
+        "category": "attribute",
+        "name": "local_bound"
+      },
+      {
+        "category": "input",
+        "name": "input_real"
+      }
+    ],
+    "rsqrt": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "scatter": [
+      {
+        "category": "input",
+        "name": "values_in"
+      },
+      {
+        "category": "input",
+        "name": "indices"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "select": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      },
+      {
+        "category": "input",
+        "name": "input3"
+      }
+    ],
+    "sigmoid": [
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "sin": [
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "slice": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "start"
+      },
+      {
+        "category": "input",
+        "name": "size"
+      }
+    ],
+    "sub": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "input2"
+      }
+    ],
+    "table": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "table"
+      }
+    ],
+    "tanh": [
+      {
+        "category": "input",
+        "name": "input"
+      }
+    ],
+    "tile": [
+      {
+        "category": "input",
+        "name": "input1"
+      },
+      {
+        "category": "input",
+        "name": "multiples"
+      }
+    ],
+    "transpose": [
+      {
+        "category": "attribute",
+        "name": "perms"
+      },
+      {
+        "category": "input",
+        "name": "input1"
+      }
+    ],
+    "transposeconv2d": [
+      {
+        "category": "attribute",
+        "name": "out_pad"
+      },
+      {
+        "category": "attribute",
+        "name": "stride"
+      },
+      {
+        "category": "attribute",
+        "name": "acc_type"
+      },
+      {
+        "category": "attribute",
+        "name": "local_bound"
+      },
+      {
+        "category": "input",
+        "name": "input"
+      },
+      {
+        "category": "input",
+        "name": "weight"
+      },
+      {
+        "category": "input",
+        "name": "bias"
+      },
+      {
+        "category": "input",
+        "name": "input_zp"
+      },
+      {
+        "category": "input",
+        "name": "weight_zp"
+      }
+    ]
+  }
+}
