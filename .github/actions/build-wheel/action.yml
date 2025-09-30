@@ -126,7 +126,8 @@ runs:
         find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir -type d -name "__pycache__" -exec rm -rf {} +
         find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir \( -name "*.d" -o -name "*.td" \) -type f -delete
         python scripts/replace_symlinks_in_llvm_python_package.py $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir --yes
-        rm $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir/_mlir_libs/libMLIRPythonCAPI.so
+        rm -f $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir/_mlir_libs/libMLIRPythonCAPI.so
+        rm -rf $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir/_mlir_libs/include
 
     - name: Save LLVM build cache
       if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
@@ -237,6 +238,7 @@ runs:
       run: |
         cd vgf_adapter_model_explorer
         source .venv/bin/activate
+        rm -rf $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir/_mlir_libs/include
         cp -r $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir src/mlir
         cp $GITHUB_WORKSPACE/ai-ml-sdk-vgf-library/build/vgf_dump/vgf_dump src/vgf_adapter_model_explorer/bin
         cp $GITHUB_WORKSPACE/llvm-project/build/bin/mlir-translate src/vgf_adapter_model_explorer/bin
@@ -258,9 +260,18 @@ runs:
         TAG="${{ inputs.python-version }}"
         TAG="${TAG//./}"
         echo -e "[bdist_wheel]\npython_tag = cp$TAG" > setup.cfg
-        python -m pip install build wheel auditwheel
+        python -m pip install build wheel
+        if [[ "$RUNNER_OS" == "Linux" ]]; then
+          python -m pip install auditwheel
+        else
+          python -m pip install delocate
+        fi
         python -m build
-        auditwheel repair --plat ${{ inputs.platform }} dist/*.whl
+        if [[ "$RUNNER_OS" == "Linux" ]]; then
+          auditwheel repair --plat ${{ inputs.platform }} dist/*.whl
+        else
+          delocate-wheel -w wheelhouse dist/*.whl
+        fi
         deactivate
 
     - name: Upload wheel artifacts

@@ -50,14 +50,22 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12", "3.13"]
-    runs-on: ubuntu-22.04-arm
+        target: [linux, macos]
+        include:
+          - target: linux
+            runner: ubuntu-22.04-arm
+            platform: manylinux_2_35_aarch64
+          - target: macos
+            runner: macos-14
+            platform: macosx_12_0_arm64
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       - uses: ./.github/actions/build-wheel
         with:
-          runner: ubuntu-22.04-arm
+          runner: ${{ matrix.runner }}
           python-version: ${{ matrix.python-version }}
-          platform: manylinux_2_35_aarch64
+          platform: ${{ matrix.platform }}
           arch: arm64
           llvm-ref: ${{ env.LLVM_REF }}
           flatbuffers-ref: ${{ env.FLATBUFFERS_REF }}
