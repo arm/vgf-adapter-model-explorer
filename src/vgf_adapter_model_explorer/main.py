@@ -28,6 +28,9 @@ class VGFAdapter(Adapter):  # pylint: disable=too-few-public-methods
         fileExts=["vgf"],
     )
 
+    def __init__(self):
+        super().__init__()
+
     # pylint: disable-next=unused-argument
     def convert(self, model_path: str, settings: Dict) -> ModelExplorerGraphs:
         """Convert a given model to a model-explorer compatible format."""
