@@ -54,6 +54,17 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
+    - name: Configure environment paths
+      shell: bash
+      run: |
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          echo "VENV_BIN=.venv/Scripts" >> "$GITHUB_ENV"
+          echo "EXE_EXT=.exe" >> "$GITHUB_ENV"
+        else
+          echo "VENV_BIN=.venv/bin" >> "$GITHUB_ENV"
+          echo "EXE_EXT=" >> "$GITHUB_ENV"
+        fi
+
     - name: Checkout plugin repo
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
       with:
@@ -71,7 +82,7 @@ runs:
       uses: actions/cache/restore@v4
       with:
         path: |
-          llvm-project/build/bin/mlir-translate
+          llvm-project/build/bin/mlir-translate${{ env.EXE_EXT }}
           llvm-project/build/tools/mlir/python_packages/mlir_core
         key: ${{ inputs.runner }}-${{ inputs.arch }}-python-${{ inputs.python-version }}-llvm-${{ inputs.llvm-ref }}-model-converter-${{ inputs.model-converter-ref }}
     - name: Checkout LLVM repo
@@ -83,40 +94,82 @@ runs:
         token: ${{ steps.get_app_token.outputs.token }}
         ref: ${{ inputs.llvm-ref }}
 
+    - name: Set up MSVC toolchain
+      if: ${{ runner.os == 'Windows' }}
+      uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
+      with:
+        arch: ${{ inputs.arch == 'arm64' && 'amd64_arm64' || 'amd64' }}
+
     - name: Build LLVM
       if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
       shell: bash
       run: |
         cd llvm-project
         python -m venv .venv
-        source .venv/bin/activate
+        source "$VENV_BIN/activate"
         python -m pip install --upgrade pip
         python -m pip install -r mlir/python/requirements.txt
+
+        # we need to use pybind11_DIR and nanobind_DIR when:
+        # 1. packages were installed via pip
+        # 2. We are on Windows (where system paths aren't automatically searched).
+        NANOBIND_DIR="$(python -c 'import nanobind, pathlib; print(pathlib.Path(nanobind.cmake_dir()).as_posix())')"
+        PYB_DIR="$(python -c 'import pybind11, pathlib; print(pathlib.Path(pybind11.get_cmake_dir()).as_posix())')"
+
         cp $GITHUB_WORKSPACE/ai-ml-sdk-model-converter/patches/llvm.patch .
         patch -p1 < llvm.patch
         mkdir -p build
         cd build
-        cmake -G Ninja ../llvm \
-            -DLLVM_ENABLE_PROJECTS=mlir \
-            -DLLVM_TARGETS_TO_BUILD="Native" \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DLLVM_REQUIRES_RTTI=ON \
-            -DLLVM_REQUIRES_EH=ON \
-            -DLLVM_ENABLE_RTTI=ON \
-            -DLLVM_ENABLE_EH=ON \
-            -DLLVM_ENABLE_ASSERTIONS=ON \
-            -DLLVM_ABI_BREAKING_CHECKS=FORCE_OFF \
-            -DMLIR_INCLUDE_INTEGRATION_TESTS=ON \
-            -DLLVM_ENABLE_TERMINFO=OFF \
-            -DMLIR_ENABLE_BINDINGS_PYTHON=ON \
-            -DPython3_EXECUTABLE=$(which python)
+        cmake_args=(
+            -G
+            Ninja
+            ../llvm
+            -DLLVM_ENABLE_PROJECTS=mlir
+            -DLLVM_TARGETS_TO_BUILD="Native"
+            -DCMAKE_BUILD_TYPE=Release
+            -DLLVM_REQUIRES_RTTI=ON
+            -DLLVM_REQUIRES_EH=ON
+            -DLLVM_ENABLE_RTTI=ON
+            -DLLVM_ENABLE_EH=ON
+            -DLLVM_ENABLE_ASSERTIONS=ON
+            -DLLVM_ABI_BREAKING_CHECKS=FORCE_OFF
+            -DMLIR_INCLUDE_INTEGRATION_TESTS=ON
+            -DLLVM_ENABLE_TERMINFO=OFF
+            -DMLIR_ENABLE_BINDINGS_PYTHON=ON
+            -DPython3_EXECUTABLE="../$VENV_BIN/python$EXE_EXT"
+            -DPython3_FIND_VIRTUALENV=FIRST
+            -DPython3_FIND_STRATEGY=LOCATION
+            -DPython_EXECUTABLE="../$VENV_BIN/python$EXE_EXT"
+            -DPython_FIND_VIRTUALENV=FIRST
+            -DPython_FIND_STRATEGY=LOCATION
+            -Dpybind11_DIR="$PYB_DIR"
+            -Dnanobind_DIR="$NANOBIND_DIR"
+        )
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          cmake_args+=(
+            -DCMAKE_C_COMPILER=cl
+            -DCMAKE_CXX_COMPILER=cl
+            -DCMAKE_LINKER=link.exe
+            -DLLVM_USE_LINKER=link
+          )
+        fi
+        cmake "${cmake_args[@]}"
         cmake --build . --target check-mlir
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          cmake --build . --target llvm-strip
+        fi
         deactivate
 
-    - name: Strip mlir-translate
-      if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
+    - name: Strip mlir-translate (unix)
+      if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' && runner.os != 'Windows' }}
       shell: bash
       run: strip ${{ github.workspace }}/llvm-project/build/bin/mlir-translate
+
+    - name: Strip mlir-translate (Windows)
+      if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' && runner.os == 'Windows' }}
+      shell: bash
+      run: |
+        "$GITHUB_WORKSPACE/llvm-project/build/bin/llvm-strip.exe" --strip-all "$GITHUB_WORKSPACE/llvm-project/build/bin/mlir-translate.exe"
 
     - name: Reduce MLIR Python bindings
       if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
@@ -135,7 +188,7 @@ runs:
       uses: actions/cache/save@v4
       with:
         path: |
-          llvm-project/build/bin/mlir-translate
+          llvm-project/build/bin/mlir-translate${{ env.EXE_EXT }}
           llvm-project/build/tools/mlir/python_packages/mlir_core
         key: ${{ steps.cache-llvm-restore.outputs.cache-primary-key }}
 
@@ -162,8 +215,16 @@ runs:
       shell: bash
       run: |
         cd flatbuffers
-        cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release
-        make -j
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER=cl \
+            -DCMAKE_CXX_COMPILER=cl \
+            -DCMAKE_LINKER=link.exe \
+            -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+        else
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release
+        fi
+        cmake --build . --parallel
 
     - name: Checkout argparse repo
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -186,8 +247,17 @@ runs:
         cd argparse
         mkdir -p build
         cd build
-        cmake -DARGPARSE_BUILD_SAMPLES=on -DARGPARSE_BUILD_TESTS=on ..
-        make
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_C_COMPILER=cl \
+            -DCMAKE_CXX_COMPILER=cl \
+            -DCMAKE_LINKER=link.exe \
+            -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded \
+            -DARGPARSE_BUILD_SAMPLES=on -DARGPARSE_BUILD_TESTS=on ..
+        else
+          cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DARGPARSE_BUILD_SAMPLES=on -DARGPARSE_BUILD_TESTS=on ..
+        fi
+        cmake --build . --parallel
 
     - name: Checkout json repo
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -216,8 +286,8 @@ runs:
       run: |
         cd ai-ml-sdk-vgf-library
         python -m venv .venv
-        source .venv/bin/activate
-        ./scripts/build.py --flatc-path $GITHUB_WORKSPACE/flatbuffers/flatc --argparse-path $GITHUB_WORKSPACE/argparse --json-path $GITHUB_WORKSPACE/json --flatbuffers-path $GITHUB_WORKSPACE/flatbuffers
+        source "$VENV_BIN/activate"
+        ./scripts/build.py --flatc-path "$GITHUB_WORKSPACE/flatbuffers/flatc$EXE_EXT" --argparse-path $GITHUB_WORKSPACE/argparse --json-path $GITHUB_WORKSPACE/json --flatbuffers-path $GITHUB_WORKSPACE/flatbuffers
         deactivate
 
     - name: Add vgf_dump to PATH
@@ -229,7 +299,7 @@ runs:
       run: |
         cd vgf_adapter_model_explorer
         python -m venv .venv
-        source .venv/bin/activate
+        source "$VENV_BIN/activate"
         python -m pip install .[test]
         deactivate
 
@@ -237,18 +307,24 @@ runs:
       shell: bash
       run: |
         cd vgf_adapter_model_explorer
-        source .venv/bin/activate
+        source "$VENV_BIN/activate"
         rm -rf $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir/_mlir_libs/include
         cp -r $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir src/mlir
-        cp $GITHUB_WORKSPACE/ai-ml-sdk-vgf-library/build/vgf_dump/vgf_dump src/vgf_adapter_model_explorer/bin
-        cp $GITHUB_WORKSPACE/llvm-project/build/bin/mlir-translate src/vgf_adapter_model_explorer/bin
+
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          cp $GITHUB_WORKSPACE/ai-ml-sdk-vgf-library/build/vgf_dump/Release/vgf_dump.exe src/vgf_adapter_model_explorer/bin
+        else
+          cp $GITHUB_WORKSPACE/ai-ml-sdk-vgf-library/build/vgf_dump/vgf_dump src/vgf_adapter_model_explorer/bin
+        fi
+
+        cp "$GITHUB_WORKSPACE/llvm-project/build/bin/mlir-translate$EXE_EXT" src/vgf_adapter_model_explorer/bin
         deactivate
 
     - name: Run plugin tests
       shell: bash
       run: |
         cd vgf_adapter_model_explorer
-        source .venv/bin/activate
+        source "$VENV_BIN/activate"
         PYTHONPATH=${{ github.workspace }}/llvm-project/build/tools/mlir/python_packages/mlir_core:. pytest --tb=short -v
         deactivate
 
@@ -256,21 +332,30 @@ runs:
       shell: bash
       run: |
         cd vgf_adapter_model_explorer
-        source .venv/bin/activate
+        source "$VENV_BIN/activate"
         TAG="${{ inputs.python-version }}"
         TAG="${TAG//./}"
         echo -e "[bdist_wheel]\npython_tag = cp$TAG" > setup.cfg
+
         python -m pip install build wheel
         if [[ "$RUNNER_OS" == "Linux" ]]; then
           python -m pip install auditwheel
-        else
+        elif [[ "$RUNNER_OS" == "macOS" ]]; then
           python -m pip install delocate
+        else
+          rm -rf dist wheelhouse
+          mkdir -p dist wheelhouse
+          python -m pip install delvewheel
         fi
         python -m build
         if [[ "$RUNNER_OS" == "Linux" ]]; then
           auditwheel repair --plat ${{ inputs.platform }} dist/*.whl
-        else
+        elif [[ "$RUNNER_OS" == "macOS" ]]; then
           delocate-wheel -w wheelhouse dist/*.whl
+        else
+          delvewheel repair dist/*.whl -w wheelhouse --add-path "$GITHUB_WORKSPACE/llvm-project/build/bin" \
+            --add-path "$GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir/_mlir_libs" \
+            --namespace-pkg mlir
         fi
         deactivate
 

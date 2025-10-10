@@ -16,11 +16,12 @@ from .spirv import build_function_graph, get_spirv_functions
 
 def build_spirv_nodes(vgf_data: Vgf, module_index: int) -> list[gb.GraphNode]:
     """Build model-explorer nodes from a SPIR-V module."""
-    dumped_spirv = exec_vgf_dump(
-        vgf_data.file_path, dump_spirv_index=module_index
-    )
-    spirv_content = exec_mlir_translate(dumped_spirv)
-    module = _load_mlir_module(spirv_content)
+    spv_path = exec_vgf_dump(vgf_data.file_path, dump_spirv_index=module_index)
+    try:
+        spirv_content = exec_mlir_translate(spv_path)
+        module = _load_mlir_module(spirv_content)
+    finally:
+        spv_path.unlink(missing_ok=True)
 
     nodes: list[gb.GraphNode] = []
     functions = get_spirv_functions(module)

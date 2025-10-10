@@ -5,13 +5,17 @@
 # See http://www.apache.org/licenses/LICENSE-2.0 for license information.
 
 import importlib.resources
+import sys
 from pathlib import Path
 
 from vgf_adapter_model_explorer.exec.exec_cmd import exec_cmd
 
 
 def get_binary_path(binary_name: str) -> Path:
-    """Get path to bundled binary."""
+    """Get path to bundled binary, accounting for platform extensions."""
+    if sys.platform.startswith("win"):
+        binary_name = binary_name + ".exe"
+
     return Path(
         str(
             importlib.resources.files(
@@ -21,14 +25,16 @@ def get_binary_path(binary_name: str) -> Path:
     )
 
 
-def exec_mlir_translate(dumped_spirv_module):
-    """Deserializes SPIR-V module using mlir-translate"""
+def exec_mlir_translate(spirv_path: Path) -> str:
+    """
+    Deserialize SPIR-V using mlir-translate.
+    - `spirv_path` is a file path to the SPIR-V binary.
+    """
+    mlir_translate = get_binary_path("mlir-translate")
 
-    mlir_translate_path = get_binary_path("mlir-translate")
-    result = exec_cmd(
-        [str(mlir_translate_path), "--deserialize-spirv"],
-        input=dumped_spirv_module,
-        text=None,
+    res = exec_cmd(
+        [str(mlir_translate), "--deserialize-spirv", str(spirv_path)],
+        input=None,
+        text=False,
     )
-
-    return result.stdout.decode("utf-8").strip()
+    return res.stdout.decode("utf-8").rstrip("\r\n")

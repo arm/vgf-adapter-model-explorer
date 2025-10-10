@@ -5,15 +5,19 @@
 # See http://www.apache.org/licenses/LICENSE-2.0 for license information.
 
 import importlib.resources
-import json
+import sys
+import tempfile
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Optional
 
 from vgf_adapter_model_explorer.exec.exec_cmd import exec_cmd
 
 
 def get_binary_path(binary_name: str) -> Path:
-    """Get path to bundled binary."""
+    """Get path to bundled binary, accounting for platform extensions."""
+    if sys.platform.startswith("win"):
+        binary_name = binary_name + ".exe"
+
     return Path(
         str(
             importlib.resources.files(
@@ -25,19 +29,19 @@ def get_binary_path(binary_name: str) -> Path:
 
 def exec_vgf_dump(
     file_path: str, dump_spirv_index: Optional[int] = None
-) -> Dict[str, Any]:
-    """Execute the vgf_dump binary and return the JSON output."""
+) -> Path:
+    """
+    Dump SPIR-V to a temp file and return its Path (caller must unlink).
+    """
+    vgf_dump = get_binary_path("vgf_dump")
 
-    is_dump_spirv_set = dump_spirv_index is not None
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".spv") as f:
+        out_path = Path(f.name)
 
-    vgf_dump_path = get_binary_path("vgf_dump")
-    command = [str(vgf_dump_path), "-i", file_path]
-    if is_dump_spirv_set:
-        command.extend(["--dump-spirv", str(dump_spirv_index)])
+    cmd = [str(vgf_dump), "-i", file_path, "-o", str(out_path)]
+    if dump_spirv_index is not None:
+        cmd += ["--dump-spirv", str(dump_spirv_index)]
 
-    result = exec_cmd(command, text=is_dump_spirv_set == False, input=None)
-    return (
-        result.stdout.strip()
-        if is_dump_spirv_set
-        else json.loads(result.stdout)
-    )
+    exec_cmd(cmd, input=None, text=False)
+
+    return out_path

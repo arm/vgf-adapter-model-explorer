@@ -4,6 +4,7 @@
 # Licensed under the Apache License v2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for license information.
 
+import json
 import os
 from typing import Any, Callable, Dict
 
@@ -25,8 +26,12 @@ class Parser:
         model_path: str,
         spirv_binary_extractor: Callable[[str], Dict[str, Any]],
     ):
-        vgf_json = spirv_binary_extractor(model_path)
         self.model_name = os.path.basename(model_path)
+        spv_path = spirv_binary_extractor(os.path.abspath(model_path))
+        try:
+            vgf_json = json.loads(spv_path.read_text())
+        finally:
+            spv_path.unlink(missing_ok=True)
         self.vgf = self._parse_vgf(vgf_json, model_path)
 
     def _parse_vgf(self, data: Dict[str, Any], file_path: str) -> Vgf:

@@ -55,7 +55,7 @@ diagnosticMode = "workspace"
 include-package-data = true
 
 [tool.setuptools.package-data]
-"*" = ["*.so", "*.0git"]
+"*" = ["*.so", "*.pyd", "*.dll", "*.dylib", "*.lib", "*.0git"]
 vgf_adapter_model_explorer = ["bin/*", "resources/tosa_1_0_operand_info.json"]
 
 [tool.setuptools.packages.find]
