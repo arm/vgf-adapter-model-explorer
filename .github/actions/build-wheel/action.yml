@@ -115,6 +115,7 @@ runs:
         # 2. We are on Windows (where system paths aren't automatically searched).
         NANOBIND_DIR="$(python -c 'import nanobind, pathlib; print(pathlib.Path(nanobind.cmake_dir()).as_posix())')"
         PYB_DIR="$(python -c 'import pybind11, pathlib; print(pathlib.Path(pybind11.get_cmake_dir()).as_posix())')"
+        PYTHON_EXEC="$(python -c 'import sys, pathlib; print(pathlib.Path(sys.executable).as_posix())')"
 
         cp $GITHUB_WORKSPACE/ai-ml-sdk-model-converter/patches/llvm.patch .
         patch -p1 < llvm.patch
@@ -136,10 +137,10 @@ runs:
             -DMLIR_INCLUDE_INTEGRATION_TESTS=ON
             -DLLVM_ENABLE_TERMINFO=OFF
             -DMLIR_ENABLE_BINDINGS_PYTHON=ON
-            -DPython3_EXECUTABLE="../$VENV_BIN/python$EXE_EXT"
+            -DPython3_EXECUTABLE="$PYTHON_EXEC"
             -DPython3_FIND_VIRTUALENV=FIRST
             -DPython3_FIND_STRATEGY=LOCATION
-            -DPython_EXECUTABLE="../$VENV_BIN/python$EXE_EXT"
+            -DPython_EXECUTABLE="$PYTHON_EXEC"
             -DPython_FIND_VIRTUALENV=FIRST
             -DPython_FIND_STRATEGY=LOCATION
             -Dpybind11_DIR="$PYB_DIR"
