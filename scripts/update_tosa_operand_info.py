@@ -5,8 +5,8 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any, Dict, List
 
-TOSA_SPEC_XML_SHA = "0ed01f5ac87e0498e989feb497254cd230381756"
-TOSA_SPEC_XML_URL = f"https://gitlab.arm.com/tosa/tosa-specification/-/raw/{TOSA_SPEC_XML_SHA}/tosa.xml"
+TOSA_SPEC_XML_SHA = "99c932000e54f0eb68e03129752a11e300e07695"  # v1.0
+TOSA_SPEC_XML_URL = f"https://raw.githubusercontent.com/arm/tosa-specification/{TOSA_SPEC_XML_SHA}/tosa.xml"
 
 SPIRV_TOSA_GRAMMAR_JSON_SHA = "7919b00b5f71bb3e6245c38c926501c009060602"
 SPIRV_TOSA_GRAMMAR_JSON_URL = f"https://raw.githubusercontent.com/KhronosGroup/SPIRV-Headers/{SPIRV_TOSA_GRAMMAR_JSON_SHA}/include/spirv/unified1/extinst.tosa.001000.1.grammar.json"
