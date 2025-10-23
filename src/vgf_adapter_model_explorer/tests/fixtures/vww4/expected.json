@@ -30077,6 +30077,8 @@
         }
       ],
       "groupNodeAttributes": null,
+      "groupNodeConfigs": null,
+      "nodeLabelsToHide": null,
       "tasksData": null,
       "layoutConfigs": null
     }

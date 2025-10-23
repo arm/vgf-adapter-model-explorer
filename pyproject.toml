@@ -39,7 +39,7 @@ Repository = "https://github.com/arm/vgf-adapter-model-explorer"
 [project.optional-dependencies]
 test = [
     "pytest",
-    "ai-edge-model-explorer==0.1.26"
+    "ai-edge-model-explorer==0.1.27"
 ]
 format = [
   "ruff==0.5.2"
