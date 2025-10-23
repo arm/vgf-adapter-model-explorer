@@ -10,7 +10,7 @@ requires = ["setuptools>=61", "wheel"]
 
 [project]
 name = "vgf-adapter-model-explorer"
-version = "0.3.0"
+version = "0.4.0"
 description = "Adapter for ai-edge-model-explorer to support VGF files"
 readme = "README.md"
 requires-python = ">=3.10, <3.14"
