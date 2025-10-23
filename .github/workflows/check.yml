@@ -9,12 +9,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - name: Install ruff
+      - name: Install qlty
+        uses: qltysh/qlty-action/install@v1
+      - name: Check lint
         run: |
-          python -m pip install .[format]
-      - name: Check ruff lint
-        run: |
-          ruff check .
-      - name: Check ruff format
-        run: |
-          ruff format --check .
+          qlty check

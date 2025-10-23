@@ -38,6 +38,9 @@ inputs:
   me-repo-access-private-key:
     required: true
     type: string
+  qlty_coverage_token:
+    required: true
+    type: string
 
 runs:
   using: "composite"
@@ -67,8 +70,6 @@ runs:
 
     - name: Checkout plugin repo
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      with:
-        path: vgf_adapter_model_explorer
 
     - name: Checkout Model Converter repo
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -176,7 +177,6 @@ runs:
       if: ${{ steps.cache-llvm-restore.outputs.cache-hit != 'true' }}
       shell: bash
       run: |
-        cd vgf_adapter_model_explorer
         find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir -type d -name "__pycache__" -exec rm -rf {} +
         find $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir \( -name "*.d" -o -name "*.td" \) -type f -delete
         python scripts/replace_symlinks_in_llvm_python_package.py $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir --yes
@@ -298,16 +298,17 @@ runs:
     - name: Install plugin Python packages
       shell: bash
       run: |
-        cd vgf_adapter_model_explorer
         python -m venv .venv
         source "$VENV_BIN/activate"
         python -m pip install .[test]
+        if [ "${{ github.repository_owner }}" != "arm" ]; then
+            python -m pip install .[coverage]
+        fi
         deactivate
 
     - name: Copy dependencies
       shell: bash
       run: |
-        cd vgf_adapter_model_explorer
         source "$VENV_BIN/activate"
         rm -rf $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir/_mlir_libs/include
         cp -r $GITHUB_WORKSPACE/llvm-project/build/tools/mlir/python_packages/mlir_core/mlir src/mlir
@@ -324,15 +325,20 @@ runs:
     - name: Run plugin tests
       shell: bash
       run: |
-        cd vgf_adapter_model_explorer
         source "$VENV_BIN/activate"
-        PYTHONPATH=${{ github.workspace }}/llvm-project/build/tools/mlir/python_packages/mlir_core:. pytest --tb=short -v
+        PYTHONPATH=${{ github.workspace }}/llvm-project/build/tools/mlir/python_packages/mlir_core:. pytest --tb=short -v ${{ github.repository_owner != 'arm' && '--cov=vgf_adapter_model_explorer --cov-report=lcov:reports/lcov.info' || '' }}
         deactivate
+
+    - name: Upload coverage to Qlty
+      if: github.repository_owner != 'arm'
+      uses: qltysh/qlty-action/coverage@9e8e09dfc3d82a968f4034f5265eaf3c142881f7 # v2.0.0
+      with:
+        token: ${{ inputs.qlty_coverage_token }}
+        files: reports/lcov.info
 
     - name: Build wheel
       shell: bash
       run: |
-        cd vgf_adapter_model_explorer
         source "$VENV_BIN/activate"
         TAG="${{ inputs.python-version }}"
         TAG="${TAG//./}"
@@ -364,4 +370,4 @@ runs:
       uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
       with:
         name: python-wheels-${{ inputs.platform }}-${{ inputs.arch }}-${{ inputs.python-version }}
-        path: vgf_adapter_model_explorer/wheelhouse/*.whl
+        path: wheelhouse/*.whl

@@ -41,8 +41,8 @@ test = [
     "pytest",
     "ai-edge-model-explorer==0.1.27"
 ]
-format = [
-  "ruff==0.5.2"
+coverage = [
+  "pytest-cov"
 ]
 
 [tool.pyright]

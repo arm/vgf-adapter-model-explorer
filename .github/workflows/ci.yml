@@ -50,6 +50,7 @@ jobs:
           model-converter-ref: ${{ env.MODEL_CONVERTER_REF }}
           me-repo-access-app-id: ${{ env.ME_REPO_ACCESS_APP_ID }}
           me-repo-access-private-key: ${{ env.ME_REPO_ACCESS_PRIVATE_KEY }}
+          qlty_coverage_token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
 
   build-arm64:
     if: ${{ !github.event.repository.private }}
