@@ -35,6 +35,7 @@ dependencies = [
 
 [project.urls]
 Repository = "https://github.com/arm/vgf-adapter-model-explorer"
+Changelog = "https://github.com/arm/vgf-adapter-model-explorer/releases"
 
 [project.optional-dependencies]
 test = [
