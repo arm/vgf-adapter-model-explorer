@@ -342,7 +342,7 @@ runs:
         source "$VENV_BIN/activate"
         TAG="${{ inputs.python-version }}"
         TAG="${TAG//./}"
-        echo -e "[bdist_wheel]\npython_tag = cp$TAG" > setup.cfg
+        echo -e "[bdist_wheel]\npython_tag = cp$TAG\nplat_name = ${{ inputs.platform }}" > setup.cfg
 
         python -m pip install build wheel
         if [[ "$RUNNER_OS" == "Linux" ]]; then
@@ -356,7 +356,7 @@ runs:
         fi
         python -m build
         if [[ "$RUNNER_OS" == "Linux" ]]; then
-          auditwheel repair --plat ${{ inputs.platform }} dist/*.whl
+          auditwheel repair dist/*.whl
         elif [[ "$RUNNER_OS" == "macOS" ]]; then
           delocate-wheel -w wheelhouse dist/*.whl
         else
