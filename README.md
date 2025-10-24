@@ -10,9 +10,11 @@ VGF Adapter for [google-ai-edge/model-explorer](https://github.com/google-ai-edg
 
 ## Supported Platforms
 
-- Linux x86_64
-- Linux AArch64
-- MacOS AArch64
+- Linux   x86_64
+- Linux   AArch64
+- MacOS   AArch64
+- Windows x86_64
+
 
 ## Installation
 
