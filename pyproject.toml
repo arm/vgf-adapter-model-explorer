@@ -40,7 +40,7 @@ Changelog = "https://github.com/arm/vgf-adapter-model-explorer/releases"
 [project.optional-dependencies]
 test = [
     "pytest",
-    "ai-edge-model-explorer==0.1.27"
+    "ai-edge-model-explorer==0.1.28"
 ]
 coverage = [
   "pytest-cov"
