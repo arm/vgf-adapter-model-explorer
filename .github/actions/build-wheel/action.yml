@@ -63,9 +63,11 @@ runs:
         if [[ "$RUNNER_OS" == "Windows" ]]; then
           echo "VENV_BIN=.venv/Scripts" >> "$GITHUB_ENV"
           echo "EXE_EXT=.exe" >> "$GITHUB_ENV"
+          echo "PATH_SEP=;" >> "$GITHUB_ENV"
         else
           echo "VENV_BIN=.venv/bin" >> "$GITHUB_ENV"
           echo "EXE_EXT=" >> "$GITHUB_ENV"
+          echo "PATH_SEP=:" >> "$GITHUB_ENV"
         fi
 
     - name: Checkout plugin repo
@@ -326,7 +328,8 @@ runs:
       shell: bash
       run: |
         source "$VENV_BIN/activate"
-        PYTHONPATH=${{ github.workspace }}/llvm-project/build/tools/mlir/python_packages/mlir_core:. pytest --tb=short -v ${{ github.repository_owner != 'arm' && '--cov=vgf_adapter_model_explorer --cov-report=lcov:reports/lcov.info' || '' }}
+        export PYTHONPATH="${{ github.workspace }}/llvm-project/build/tools/mlir/python_packages/mlir_core${PATH_SEP}."
+        pytest --tb=short -v ${{ github.repository_owner != 'arm' && '--cov=vgf_adapter_model_explorer --cov-report=lcov:reports/lcov.info' || '' }}
         deactivate
 
     - name: Upload coverage to Qlty

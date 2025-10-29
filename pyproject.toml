@@ -40,6 +40,7 @@ Changelog = "https://github.com/arm/vgf-adapter-model-explorer/releases"
 [project.optional-dependencies]
 test = [
     "pytest",
+    "pytest-timeout",
     "ai-edge-model-explorer==0.1.28"
 ]
 coverage = [
