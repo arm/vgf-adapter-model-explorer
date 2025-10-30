@@ -43,6 +43,9 @@ test = [
     "pytest-timeout",
     "ai-edge-model-explorer==0.1.28"
 ]
+format = [
+  "ruff==0.14.2"
+]
 coverage = [
   "pytest-cov"
 ]

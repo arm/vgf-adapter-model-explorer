@@ -47,7 +47,3 @@ mode = "comment"
 name = "default"
 default = true
 
-[[plugin]]
-name = "ruff"
-version = "0.14.1"
-drivers = ["lint", "format"]

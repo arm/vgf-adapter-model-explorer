@@ -48,4 +48,6 @@ def test_model_explorer_smoke():
             if curr_searched >= len(searched_lines):
                 break
 
-    assert all(seen_lines.values()), f"Not all expected lines were seen: {seen_lines}"
+    assert all(seen_lines.values()), (
+        f"Not all expected lines were seen: {seen_lines}"
+    )
