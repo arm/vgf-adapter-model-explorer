@@ -49,6 +49,9 @@ format = [
 coverage = [
   "pytest-cov"
 ]
+sbom = [
+  "spdx-tools==0.8.3"
+]
 
 [tool.pyright]
 extraPaths = [

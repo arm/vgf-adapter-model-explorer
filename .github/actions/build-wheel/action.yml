@@ -339,6 +339,24 @@ runs:
         token: ${{ inputs.qlty_coverage_token }}
         files: reports/lcov.info
 
+    - name: Get version
+      id: get_version
+      shell: bash
+      run: |
+        source "$VENV_BIN/activate"
+        WHEEL_VERSION=$(python -c "import sys; toml = 'tomllib' if sys.version_info >= (3,11) else 'tomli'; m = __import__(toml); print(m.load(open('pyproject.toml','rb'))['project']['version'])")
+        echo "WHEEL_VERSION=$WHEEL_VERSION" >> "$GITHUB_ENV"
+        deactivate
+
+    - name: Add SBOMs
+      shell: bash
+      run: |
+        source "$VENV_BIN/activate"
+        python -m pip install .[sbom]
+        python ./scripts/generate-mlir-bin-sbom.py --llvm-ref ${{ inputs.llvm-ref }} --model-converter-ref ${{ inputs.model-converter-ref }} --wheel-version "$WHEEL_VERSION" --output src/vgf_adapter_model_explorer/bin/mlir-builds.spdx.json
+        cp ai-ml-sdk-vgf-library/ai-ml-sdk-vgf-library.spdx.json src/vgf_adapter_model_explorer/bin
+        deactivate
+
     - name: Build wheel
       shell: bash
       run: |
