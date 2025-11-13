@@ -1,0 +1,36 @@
+name: Internal PR Checks
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited, ready_for_review, labeled, unlabeled]
+
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+
+jobs:
+  call-internal-checks:
+    if: ${{ github.event.repository.private && contains(fromJSON('["opened","reopened","synchronize","edited"]'), github.event.action) }}
+    uses: Arm-Debug/ai-debug-workflows/.github/workflows/internal-checks.yml@main
+    with:
+      change_state: ${{ contains(fromJSON('["opened","reopened"]'), github.event.action) && 'CREATED' || 'UPDATED' }}
+    secrets: inherit
+
+  remove-label:
+    if: ${{ github.event.repository.private && github.event.action != 'labeled' && github.event.action != 'unlabeled' }}
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - run: gh pr edit "${{ github.event.pull_request.number }}" --repo "${{ github.repository }}" --remove-label "checked-and-approved"
+
+  require-internal-checks-label:
+    needs: remove-label
+    if: ${{ github.event.repository.private && always() }}
+    permissions:
+      contents: read
+      pull-requests: read
+      issues: read
+    uses: Arm-Debug/ai-debug-workflows/.github/workflows/internal-checks-label.yml@main
+    secrets: inherit
