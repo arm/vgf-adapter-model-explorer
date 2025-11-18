@@ -9,15 +9,6 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 3 */6 * *"
-env:
-  LLVM_REF: 802ea0eb78f7c974d4097c38587f4c207451d7ee
-  FLATBUFFERS_REF: 0100f6a5779831fa7a651e4b67ef389a8752bd9b
-  ARGPARSE_REF: 68fd0277eea5412aff9b91c0b70efc698359dae0
-  JSON_REF: 9cca280a4d0ccf0c08f47a99aa71d1b0e52f8d03
-  VGF_LIB_REF: 7d7ab7bb47eeefb4da519d34729737fb701981a3
-  MODEL_CONVERTER_REF: 9170912d63b54ea079fe2fb7fbec052016d2efd8
-  ME_REPO_ACCESS_APP_ID: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
-  ME_REPO_ACCESS_PRIVATE_KEY: ${{ secrets.ME_REPO_ACCESS_PRIVATE_KEY }}
 jobs:
   build-x64:
     name: Build (x64)
@@ -42,14 +33,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           platform: ${{ matrix.platform }}
           arch: x64
-          llvm-ref: ${{ env.LLVM_REF }}
-          flatbuffers-ref: ${{ env.FLATBUFFERS_REF }}
-          argparse-ref: ${{ env.ARGPARSE_REF }}
-          json-ref: ${{ env.JSON_REF }}
-          vgf-lib-ref: ${{ env.VGF_LIB_REF }}
-          model-converter-ref: ${{ env.MODEL_CONVERTER_REF }}
-          me-repo-access-app-id: ${{ env.ME_REPO_ACCESS_APP_ID }}
-          me-repo-access-private-key: ${{ env.ME_REPO_ACCESS_PRIVATE_KEY }}
           qlty_coverage_token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
 
   build-arm64:
@@ -76,14 +59,6 @@ jobs:
           python-version: ${{ matrix.python-version }}
           platform: ${{ matrix.platform }}
           arch: arm64
-          llvm-ref: ${{ env.LLVM_REF }}
-          flatbuffers-ref: ${{ env.FLATBUFFERS_REF }}
-          argparse-ref: ${{ env.ARGPARSE_REF }}
-          json-ref: ${{ env.JSON_REF }}
-          vgf-lib-ref: ${{ env.VGF_LIB_REF }}
-          model-converter-ref: ${{ env.MODEL_CONVERTER_REF }}
-          me-repo-access-app-id: ${{ env.ME_REPO_ACCESS_APP_ID }}
-          me-repo-access-private-key: ${{ env.ME_REPO_ACCESS_PRIVATE_KEY }}
 
   release:
     name: Release

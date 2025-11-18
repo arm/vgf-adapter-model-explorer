@@ -3,44 +3,20 @@ description: Builds wheels for VGF Adapter for Model Explorer
 
 inputs:
   runner:
+    description: GitHub Actions runner OS (e.g. ubuntu-latest, macos-latest)
     required: true
-    type: string
   python-version:
+    description: Python version to use for building (e.g. 3.9, 3.10, 3.11)
     required: true
-    type: string
   platform:
+    description: Platform tag for wheel naming (e.g. manylinux_2_17_x86_64)
     required: true
-    type: string
   arch:
+    description: Target architecture (e.g. x86_64, arm64)
     required: true
-    type: string
-  llvm-ref:
-    required: true
-    type: string
-  flatbuffers-ref:
-    required: true
-    type: string
-  argparse-ref:
-    required: true
-    type: string
-  json-ref:
-    required: true
-    type: string
-  vgf-lib-ref:
-    required: true
-    type: string
-  model-converter-ref:
-    required: true
-    type: string
-  me-repo-access-app-id:
-    required: true
-    type: string
-  me-repo-access-private-key:
-    required: true
-    type: string
   qlty_coverage_token:
+    description: Authentication token for uploading coverage reports to Qlty
     required: true
-    type: string
 
 runs:
   using: "composite"
@@ -126,21 +102,22 @@ runs:
         cd "$WORK_DIR/c/dependencies/llvm-project"
         patch -p1 < ../../sw/model-converter/patches/llvm.patch
 
-    - name: Extract LLVM revision from manifest
-      id: llvm-revision
+    - name: Extract dependency revisions from manifest
+      id: dep-revisions
       shell: bash
       run: |
-        cd "$WORK_DIR"
-        LLVM_REV=$(sed -n 's/.*path="dependencies\/llvm-project".*revision="\([^"]*\)".*/\1/p' c/.repo/manifests/default.xml)
-        echo "LLVM revision: $LLVM_REV"
-        echo "revision=$LLVM_REV" >> $GITHUB_OUTPUT
+        cd "$WORK_DIR/c/.repo/manifests"
+        LLVM_REV=$(sed -n 's/.*path="dependencies\/llvm-project".*revision="\([^"]*\)".*/\1/p' default.xml)
+        MC_REV=$(sed -n 's/.*path="sw\/model-converter".*revision="\([^"]*\)".*/\1/p' default.xml)
+        echo "llvm-ref=$LLVM_REV" >> $GITHUB_OUTPUT
+        echo "model-converter-ref=$MC_REV" >> $GITHUB_OUTPUT
 
     - name: Restore LLVM build cache
       uses: actions/cache@v4
       id: cache-llvm
       with:
         path: c/dependencies/llvm-project/b
-        key: llvm-${{ steps.llvm-revision.outputs.revision }}-${{ runner.os }}-${{ runner.arch }}-${{ inputs.python-version }}
+        key: llvm-${{ steps.dep-revisions.outputs.llvm-ref }}-${{ runner.os }}-${{ runner.arch }}-${{ inputs.python-version }}
 
     - name: Build LLVM
       if: steps.cache-llvm.outputs.cache-hit != 'true'
@@ -274,7 +251,11 @@ runs:
       run: |
         cd "$WORK_DIR"
         python -m pip install .[sbom]
-        python ./scripts/generate-mlir-bin-sbom.py --llvm-ref ${{ inputs.llvm-ref }} --model-converter-ref ${{ inputs.model-converter-ref }} --wheel-version "$WHEEL_VERSION" --output src/vgf_adapter_model_explorer/bin/mlir-builds.spdx.json
+        python ./scripts/generate-mlir-bin-sbom.py \
+          --llvm-ref ${{ steps.dep-revisions.outputs.llvm-ref }} \
+          --model-converter-ref ${{ steps.dep-revisions.outputs.model-converter-ref }} \
+          --wheel-version "$WHEEL_VERSION" \
+          --output src/vgf_adapter_model_explorer/bin/mlir-builds.spdx.json
         cp c/sw/vgf-lib/ai-ml-sdk-vgf-library.spdx.json src/vgf_adapter_model_explorer/bin
 
     - name: Build wheel
