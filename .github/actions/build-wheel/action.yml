@@ -30,17 +30,16 @@ runs:
       run: |
         subst B: %CD%
 
-    - name: Set working directory (Windows)
-      if: runner.os == 'Windows'
+    - name: Set working directory and PATH separator
       shell: bash
       run: |
-        echo "WORK_DIR=/b" >> "$GITHUB_ENV"
-
-    - name: Set working directory (Linux and macOS)
-      if: runner.os != 'Windows'
-      shell: bash
-      run: |
-        echo "WORK_DIR=$GITHUB_WORKSPACE" >> "$GITHUB_ENV"
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          echo "WORK_DIR=/b" >> "$GITHUB_ENV"
+          echo "PATH_SEP=;" >> "$GITHUB_ENV"
+        else
+          echo "WORK_DIR=$GITHUB_WORKSPACE" >> "$GITHUB_ENV"
+          echo "PATH_SEP=:" >> "$GITHUB_ENV"
+        fi
 
     - name: Set up Python environment
       uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
@@ -53,11 +52,6 @@ runs:
       run: |
         git config --global core.longpaths true
         git config --global core.autocrlf false
-        if [[ "$RUNNER_OS" == "Windows" ]]; then
-          echo "PATH_SEP=;" >> "$GITHUB_ENV"
-        else
-          echo "PATH_SEP=:" >> "$GITHUB_ENV"
-        fi
 
     - name: Install dependencies (Linux)
       if: runner.os == 'Linux'
@@ -87,7 +81,7 @@ runs:
 
         choco install -y cmake
 
-    - name: Clone Model Converter
+    - name: Clone Model Converter and patch LLVM
       shell: bash
       run: |
         cd "$WORK_DIR"
@@ -96,10 +90,7 @@ runs:
         repo init -u https://github.com/arm/ai-ml-sdk-manifest -g model-converter --no-repo-verify
         repo sync --no-clone-bundle
 
-    - name: Patch LLVM
-      shell: bash
-      run: |
-        cd "$WORK_DIR/c/dependencies/llvm-project"
+        cd dependencies/llvm-project
         patch -p1 < ../../sw/model-converter/patches/llvm.patch
 
     - name: Extract dependency revisions from manifest
