@@ -125,45 +125,49 @@ runs:
         PYTHON_EXEC="$(python -c 'import sys, pathlib; print(pathlib.Path(sys.executable).as_posix())')"
 
         mkdir b && cd b
+
+        # Platform-specific compiler settings
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          C_COMPILER=cl
+          CXX_COMPILER=cl
+        else
+          C_COMPILER=clang
+          CXX_COMPILER=clang++
+        fi
+
         cmake_args=(
-          -G
-          Ninja
+          -G Ninja
           ../llvm
+          # Build configuration
           -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_C_COMPILER=clang
-          -DCMAKE_CXX_COMPILER=clang++
+          -DCMAKE_C_COMPILER="$C_COMPILER"
+          -DCMAKE_CXX_COMPILER="$CXX_COMPILER"
+          # LLVM/MLIR configuration
           -DLLVM_ENABLE_PROJECTS=mlir
           -DLLVM_TARGETS_TO_BUILD="Native"
-          -DLLVM_REQUIRES_RTTI=ON
-          -DLLVM_REQUIRES_EH=ON
           -DLLVM_ENABLE_RTTI=ON
           -DLLVM_ENABLE_EH=ON
           -DLLVM_ENABLE_ASSERTIONS=ON
           -DLLVM_ABI_BREAKING_CHECKS=FORCE_OFF
           -DLLVM_ENABLE_TERMINFO=OFF
+          # MLIR Python bindings
           -DMLIR_ENABLE_BINDINGS_PYTHON=ON
           -DPython3_EXECUTABLE="$PYTHON_EXEC"
           -DPython3_FIND_VIRTUALENV=FIRST
           -DPython3_FIND_STRATEGY=LOCATION
-          -DPython_EXECUTABLE="$PYTHON_EXEC"
-          -DPython_FIND_VIRTUALENV=FIRST
-          -DPython_FIND_STRATEGY=LOCATION
           -Dpybind11_DIR="$PYB_DIR"
           -Dnanobind_DIR="$NANOBIND_DIR"
         )
 
+        # Platform-specific linker settings
         if [[ "$RUNNER_OS" == "Windows" ]]; then
           cmake_args+=(
-            -DCMAKE_C_COMPILER=cl
-            -DCMAKE_CXX_COMPILER=cl
             -DCMAKE_LINKER=link.exe
             -DLLVM_USE_LINKER=link
             -DCMAKE_OBJECT_PATH_MAX=500
           )
         else
-          cmake_args+=(
-              -DLLVM_ENABLE_LLD=ON
-          )
+          cmake_args+=(-DLLVM_ENABLE_LLD=ON)
         fi
 
         cmake "${cmake_args[@]}"
