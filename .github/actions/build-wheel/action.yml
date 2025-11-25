@@ -203,6 +203,17 @@ runs:
           cp c/dependencies/llvm-project/b/bin/mlir-translate src/vgf_adapter_model_explorer/bin
         fi
 
+    - name: Clean up and strip binaries (macOS)
+      if: runner.os == 'macOS'
+      shell: bash
+      run: |
+        cd "$WORK_DIR"
+        rm -rf src/mlir/_mlir_libs/include
+        strip src/vgf_adapter_model_explorer/bin/vgf_dump
+        strip src/vgf_adapter_model_explorer/bin/mlir-translate
+        find src/mlir -name "*.so" -exec strip {} \;
+        find src/mlir -name "*.dylib" -exec strip {} \;
+
     - name: Install plugin Python packages
       shell: bash
       run: |
@@ -275,7 +286,7 @@ runs:
           auditwheel repair --plat ${{ inputs.platform }} --strip -w wheelhouse dist/*.whl
         elif [ "$RUNNER_OS" == "macOS" ]; then
           python -m pip install delocate
-          delocate-wheel --require-archs ${{ inputs.arch }} --strip -w wheelhouse dist/*.whl
+          delocate-wheel --require-archs ${{ inputs.arch }} -w wheelhouse dist/*.whl
         else
           python -m pip install delvewheel
           python -m delvewheel repair dist/*.whl -w wheelhouse --strip \

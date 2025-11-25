@@ -13,6 +13,7 @@ wheels/
 *.egg-info/
 *.egg
 MANIFEST
+wheelhouse/
 
 # Unit test / coverage reports
 .coverage
@@ -29,3 +30,12 @@ venv/
 
 # Ruff stuff:
 .ruff_cache/
+
+# Local build files
+c/
+src/mlir/
+src/vgf_adapter_model_explorer/bin/mlir-translate
+src/vgf_adapter_model_explorer/bin/mlir-translate.exe
+src/vgf_adapter_model_explorer/bin/vgf_dump
+src/vgf_adapter_model_explorer/bin/vgf_dump.exe
+src/vgf_adapter_model_explorer/bin/*.spdx.json
