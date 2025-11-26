@@ -87,10 +87,16 @@ runs:
         cd "$WORK_DIR"
         mkdir -p c && cd c
 
-        repo init -u https://github.com/arm/ai-ml-sdk-manifest \
-          --depth 1 \
-          -g model-converter \
-          --no-repo-verify
+        repo_args=(
+          -u https://github.com/arm/ai-ml-sdk-manifest
+          --depth 1
+          -g model-converter
+        )
+        if [[ "$RUNNER_OS" == "Windows" ]]; then
+          # Jira: DEML-843
+          repo_args+=(--no-repo-verify)
+        fi
+        repo init "${repo_args[@]}"
         repo sync --no-clone-bundle
 
         cd dependencies/llvm-project
