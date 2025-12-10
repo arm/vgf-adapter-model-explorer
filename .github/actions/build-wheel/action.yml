@@ -85,10 +85,14 @@ runs:
       shell: bash
       run: |
         cd "$WORK_DIR"
+        # repo requires an attached HEAD to grab the manifest
+        git branch --force __ci_manifest
+        git checkout __ci_manifest
         mkdir -p c && cd c
 
         repo_args=(
-          -u https://github.com/arm/ai-ml-sdk-manifest
+          -u ..
+          -m dependencies.xml
           --depth 1
           -g model-converter
         )
@@ -107,8 +111,8 @@ runs:
       shell: bash
       run: |
         cd "$WORK_DIR/c/.repo/manifests"
-        LLVM_REV=$(sed -n 's/.*path="dependencies\/llvm-project".*revision="\([^"]*\)".*/\1/p' default.xml)
-        MC_REV=$(sed -n 's/.*path="sw\/model-converter".*revision="\([^"]*\)".*/\1/p' default.xml)
+        LLVM_REV=$(sed -n 's/.*path="dependencies\/llvm-project".*revision="\([^"]*\)".*/\1/p' dependencies.xml)
+        MC_REV=$(sed -n 's/.*path="sw\/model-converter".*revision="\([^"]*\)".*/\1/p' dependencies.xml)
         echo "llvm-ref=$LLVM_REV" >> $GITHUB_OUTPUT
         echo "model-converter-ref=$MC_REV" >> $GITHUB_OUTPUT
 
@@ -179,7 +183,7 @@ runs:
         cmake "${cmake_args[@]}"
         cmake --build . --target mlir-translate MLIRPythonModules mlir-tblgen MLIROptLib
 
-    - name: Build Model Converter
+    - name: Build VGF Lib
       shell: bash
       run: |
         cd "$WORK_DIR/c"
@@ -189,12 +193,8 @@ runs:
         else
           NPROC=$(sysctl -n hw.ncpu)
         fi
-        python ${SDK_PATH}/sw/model-converter/scripts/build.py -j $NPROC \
-          --vgf-lib-path ${SDK_PATH}/sw/vgf-lib \
-          --flatbuffers-path ${SDK_PATH}/dependencies/flatbuffers \
-          --argparse-path ${SDK_PATH}/dependencies/argparse \
-          --tosa-mlir-translator-path ${SDK_PATH}/dependencies/tosa_mlir_translator \
-          --external-llvm ${SDK_PATH}/dependencies/llvm-project/b
+        python ${SDK_PATH}/sw/vgf-lib/scripts/build.py -j $NPROC
+        
 
     - name: Copy dependencies
       shell: bash
@@ -202,10 +202,10 @@ runs:
         cd "$WORK_DIR"
         cp -r c/dependencies/llvm-project/b/tools/mlir/python_packages/mlir_core/mlir src/mlir
         if [ "$RUNNER_OS" == "Windows" ]; then
-          cp c/sw/model-converter/build/vgf-lib/vgf_dump/vgf_dump.exe src/vgf_adapter_model_explorer/bin/vgf_dump.exe
+          cp c/sw/vgf-lib/build/vgf_dump/vgf_dump.exe src/vgf_adapter_model_explorer/bin/vgf_dump.exe
           cp c/dependencies/llvm-project/b/bin/mlir-translate.exe src/vgf_adapter_model_explorer/bin/mlir-translate.exe
         else
-          cp c/sw/model-converter/build/vgf-lib/vgf_dump/vgf_dump src/vgf_adapter_model_explorer/bin
+          cp c/sw/vgf-lib/build/vgf_dump/vgf_dump src/vgf_adapter_model_explorer/bin
           cp c/dependencies/llvm-project/b/bin/mlir-translate src/vgf_adapter_model_explorer/bin
         fi
 
@@ -234,9 +234,9 @@ runs:
       run: |
         echo "$WORK_DIR/c/dependencies/llvm-project/b/bin" >> "$GITHUB_PATH"
         if [ "$RUNNER_OS" == "Windows" ]; then
-          echo "$WORK_DIR/c/sw/model-converter/build/vgf-lib/vgf_dump/Release" >> "$GITHUB_PATH"
+          echo "$WORK_DIR/c/sw/vgf-lib/build/vgf_dump/Release" >> "$GITHUB_PATH"
         else
-          echo "$WORK_DIR/c/sw/model-converter/build/vgf-lib/vgf_dump" >> "$GITHUB_PATH"
+          echo "$WORK_DIR/c/sw/vgf-lib/build/vgf_dump" >> "$GITHUB_PATH"
         fi
 
     - name: Run plugin tests

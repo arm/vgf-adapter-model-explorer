@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+SPDX-FileCopyrightText: Copyright 2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+SPDX-License-Identifier: Apache-2.0
+-->
+<manifest>
+    <remote name="github" fetch="https://github.com/" alias="origin"/>
+    <remote name="gitlab-arm" fetch="https://gitlab.arm.com/" alias="origin"/>
+
+    <default sync-c="true" sync-tags="false"/>
+
+    <!-- dependencies start -->
+    <project path="dependencies/llvm-project" remote="github" name="llvm/llvm-project" revision="147e615a658db0c0679ff2814dbc1bc59ded5160" upstream="main" groups="all model-converter"/>
+    <project path="dependencies/argparse" remote="github" name="p-ranav/argparse" revision="refs/tags/v3.1" groups="all scenario-runner model-converter vgf-lib"/>
+    <project path="dependencies/flatbuffers" remote="github" name="google/flatbuffers" revision="refs/tags/v25.2.10" groups="all scenario-runner model-converter vgf-lib"/>
+    <project path="dependencies/json" remote="github" name="nlohmann/json" revision="refs/tags/v3.11.3" groups="all scenario-runner vgf-lib model-converter"/>
+    <project path="dependencies/pybind11" remote="github" name="pybind/pybind11" revision="refs/tags/v2.13.6" groups="all scenario-runner model-converter vgf-lib"/>
+    <!-- dependencies end -->
+
+    <!-- sw start -->
+    <project path="sw/model-converter" remote="github" name="arm/ai-ml-sdk-model-converter" revision="7ab38a34b6c4c6a929427cb70f4446497f87c713" groups="all model-converter"/>
+    <project path="sw/vgf-lib" remote="github" name="arm/ai-ml-sdk-vgf-library" revision="71572d5cd0d32b4926c3ed2fd21ecd4f41222ca8" groups="all scenario-runner model-converter vgf-lib"/>
+    <!-- sw end -->
+
+</manifest>

@@ -41,10 +41,8 @@ def add_operation_attrs(node: gb.GraphNode, op: ir.Operation) -> None:
 
     node_attrs = []
 
-    for named_attr in op.attributes:
-        name = named_attr.name
-        attr = str(named_attr.attr)
-        node_attrs.append(gb.KeyValue(key=name, value=attr))
+    for name, attr in op.attributes.items():
+        node_attrs.append(gb.KeyValue(key=name, value=str(attr)))
 
     node_attrs.append(gb.KeyValue(key="loc", value=str(op.location)))
 
