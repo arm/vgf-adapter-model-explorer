@@ -120,7 +120,11 @@ runs:
       uses: actions/cache@v4
       id: cache-llvm
       with:
-        path: c/dependencies/llvm-project/b
+        path: |
+          c/dependencies/llvm-project/b/tools/mlir/python_packages
+          c/dependencies/llvm-project/b/tools/mlir/python
+          c/dependencies/llvm-project/b/bin
+
         key: llvm-${{ steps.dep-revisions.outputs.llvm-ref }}-${{ runner.os }}-${{ runner.arch }}-${{ inputs.python-version }}
 
     - name: Build LLVM
