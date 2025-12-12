@@ -70,7 +70,7 @@ def build_function_graph(
             traversed_ops=traversed_ops,
         )
 
-        if "Tosa" not in operation.name:
+        if "Tosa" not in operation.name and "GraphOutputs" not in operation.name:
             continue
 
         function_graph.nodes.append(node)

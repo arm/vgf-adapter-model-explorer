@@ -32130,6 +32130,39 @@
           "config": null
         },
         {
+          "id": "1583",
+          "label": "GraphOutputs",
+          "namespace": "graph_partition_0",
+          "subgraphIds": [],
+          "attrs": [
+            {
+              "key": "loc",
+              "value": "loc(\"-\":1589:5)"
+            }
+          ],
+          "incomingEdges": [
+            {
+              "sourceNodeId": "1582",
+              "sourceNodeOutputId": "0",
+              "targetNodeInputId": "0"
+            }
+          ],
+          "outputsMetadata": [],
+          "inputsMetadata": [
+            {
+              "id": "0",
+              "attrs": [
+                {
+                  "key": "tensor_shape",
+                  "value": "!spirv.arm.tensor<1x1001xi8>"
+                }
+              ]
+            }
+          ],
+          "style": null,
+          "config": null
+        },
+        {
           "id": "mrt_115",
           "label": "VK_DESCRIPTOR_TYPE_TENSOR_ARM",
           "namespace": "",
@@ -32178,7 +32211,7 @@
           "attrs": [],
           "incomingEdges": [
             {
-              "sourceNodeId": "1582",
+              "sourceNodeId": "1583",
               "sourceNodeOutputId": "0",
               "targetNodeInputId": "0"
             }
