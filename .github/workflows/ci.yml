@@ -1,4 +1,5 @@
 name: VGF Adapter for Model Explorer CI
+
 on:
   push:
     branches: ["main"]
@@ -9,6 +10,11 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 3 */6 * *"
+
+env:
+  ME_REPO_ACCESS_APP_ID: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
+  ME_REPO_ACCESS_PRIVATE_KEY: ${{ secrets.ME_REPO_ACCESS_PRIVATE_KEY }}
+
 jobs:
   build-x64:
     name: Build (x64)
