@@ -74,6 +74,11 @@
               "targetNodeInputId": "4"
             },
             {
+              "sourceNodeId": "mrt_95",
+              "sourceNodeOutputId": "0",
+              "targetNodeInputId": "5"
+            },
+            {
               "sourceNodeId": "5",
               "sourceNodeOutputId": "0",
               "targetNodeInputId": "6"
@@ -92,11 +97,6 @@
               "sourceNodeId": "8",
               "sourceNodeOutputId": "0",
               "targetNodeInputId": "9"
-            },
-            {
-              "sourceNodeId": "mrt_95",
-              "sourceNodeOutputId": "0",
-              "targetNodeInputId": "0"
             }
           ],
           "outputsMetadata": [

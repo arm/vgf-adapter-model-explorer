@@ -71,27 +71,25 @@ class VgfGraphBuilder:
         spirv_nodes = self._build_spirv_nodes(self.vgf_data, module.index)
         if not spirv_nodes:
             return []
-        self._clean_spirv_edges(spirv_nodes)
-        self._connect_spirv_node(spirv_nodes[0], input_nodes)
+        self._connect_spirv_nodes(spirv_nodes, input_nodes)
         return spirv_nodes
 
-    def _clean_spirv_edges(self, spirv_nodes: list[gb.GraphNode]) -> None:
-        """Clean incoming edges of SPIR-V nodes."""
-        for node in spirv_nodes:
-            new_incoming_edges = []
-            for e in node.incomingEdges:
-                if e.sourceNodeId != GRAPH_INPUT_ANNOTATION:
-                    new_incoming_edges.append(e)
-            node.incomingEdges[:] = new_incoming_edges
-
-    def _connect_spirv_node(
-        self, spirv_node: gb.GraphNode, input_nodes: list[gb.GraphNode]
+    def _connect_spirv_nodes(
+        self, spirv_nodes: list[gb.GraphNode], input_nodes: list[gb.GraphNode]
     ) -> None:
-        """Connect SPIR-V node to the graph."""
-        for node in input_nodes:
-            spirv_node.incomingEdges.append(
-                gb.IncomingEdge(sourceNodeId=node.id, targetNodeInputId="0")
-            )
+        """Connect SPIR-V nodes to the graph by mapping block arguments to input nodes."""
+        for spirv_node in spirv_nodes:
+            new_incoming_edges = []
+            for edge in spirv_node.incomingEdges:
+                if edge.sourceNodeId == GRAPH_INPUT_ANNOTATION:
+                    arg_number = int(edge.sourceNodeOutputId or "0")
+                    if arg_number < len(input_nodes):
+                        edge.sourceNodeId = input_nodes[arg_number].id
+                        edge.sourceNodeOutputId = "0"
+                        new_incoming_edges.append(edge)
+                else:
+                    new_incoming_edges.append(edge)
+            spirv_node.incomingEdges[:] = new_incoming_edges
 
     def _build_segment_input_nodes(
         self, inputs: list[IOBase], module: Module

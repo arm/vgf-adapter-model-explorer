@@ -91,6 +91,8 @@ test_vgf_data = Vgf(
 
 
 def test_builder():
+    from ..constants import GRAPH_INPUT_ANNOTATION
+
     mock_get_spirv_nodes = Mock(
         return_value=[
             gb.GraphNode(
@@ -99,7 +101,13 @@ def test_builder():
                 namespace="",
                 subgraphIds=[],
                 attrs=[],
-                incomingEdges=[],
+                incomingEdges=[
+                    gb.IncomingEdge(
+                        sourceNodeId=GRAPH_INPUT_ANNOTATION,
+                        sourceNodeOutputId="0",
+                        targetNodeInputId="0",
+                    )
+                ],
                 outputsMetadata=[
                     gb.MetadataItem(
                         id="0",
