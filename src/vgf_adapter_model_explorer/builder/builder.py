@@ -12,7 +12,7 @@ from model_explorer import graph_builder as gb
 from ..constants import GRAPH_INPUT_ANNOTATION, GRAPH_OUTPUT_ANNOTATION
 from ..generic import append_attr_to_metadata_list
 from ..parser.types import IOBase, Module, Resource, Vgf
-from .utils import extend_resource, find_item, format_index
+from .utils import extend_resource, format_index
 
 
 class VgfGraphBuilder:
@@ -26,6 +26,7 @@ class VgfGraphBuilder:
         """Builds a Model Explorer GraphCollection from VGF data."""
 
         self.vgf_data = vgf_data
+        self.vgf_resources = {r.index: r for r in vgf_data.resources}
         self._build_spirv_nodes = build_spirv_nodes
         self.graph_collection = self._build_graph_collection()
 
@@ -41,9 +42,11 @@ class VgfGraphBuilder:
     def _build_nodes(self) -> list[gb.GraphNode]:
         """Build all nodes for the graph."""
         nodes = [self._build_graph_input_node()]
+        modules = {m.index: m for m in self.vgf_data.modules}
+        graph_output_node = self._build_graph_output_node()
 
         for segment in self.vgf_data.model_sequence.segments:
-            module = find_item(segment.module_index, self.vgf_data.modules)
+            module = modules.get(segment.module_index)
             if not module:
                 continue
 
@@ -56,9 +59,7 @@ class VgfGraphBuilder:
             output_nodes = self._build_segment_output_nodes(
                 segment.outputs, module, spirv_nodes
             )
-            nodes.extend(
-                input_nodes + output_nodes + [self._build_graph_output_node()]
-            )
+            nodes.extend(input_nodes + output_nodes + [graph_output_node])
 
         return nodes
 
@@ -98,7 +99,7 @@ class VgfGraphBuilder:
         nodes: list[gb.GraphNode] = []
 
         for input in inputs:
-            resource = find_item(input.mrt_index, self.vgf_data.resources)
+            resource = self.vgf_resources.get(input.mrt_index)
             if not resource:
                 continue
             nodes.append(self._build_node(resource, module, input.mrt_index))
@@ -113,7 +114,7 @@ class VgfGraphBuilder:
         source_id = spirv_nodes[-1].id if spirv_nodes else None
 
         for output in outputs:
-            resource = find_item(output.mrt_index, self.vgf_data.resources)
+            resource = self.vgf_resources.get(output.mrt_index)
             if not resource:
                 continue
             output_nodes.append(
@@ -157,9 +158,7 @@ class VgfGraphBuilder:
     ) -> gb.GraphNode:
         """Build a single graph node."""
         if source_id:
-            incoming_edges = [
-                gb.IncomingEdge(sourceNodeId=source_id, targetNodeInputId="0")
-            ]
+            incoming_edges = [gb.IncomingEdge(sourceNodeId=source_id)]
         else:
             incoming_edges = self._build_incoming_edges(resource)
 
