@@ -6,11 +6,28 @@ on:
 
 jobs:
   lint-and-format:
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.13", "3.12", "3.11", "3.10"]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - name: Install qlty
-        uses: qltysh/qlty-action/install@v1
-      - name: Check lint
+      - uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Checkout plugin repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Install plugin Python packages
         run: |
-          qlty check
+          pip install --upgrade pip
+          pip install . --group dev
+
+      - name: Lint and Format Check
+        run: |
+          ruff check --output-format=github
+          ruff format --check
+
+      - name: Type Check
+        run: |
+          pyright

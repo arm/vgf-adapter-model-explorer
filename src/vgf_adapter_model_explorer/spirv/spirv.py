@@ -6,7 +6,7 @@
 
 from typing import Dict
 
-from mlir import ir
+from mlir import ir  # type: ignore[reportMissingImports]
 from model_explorer import graph_builder as gb
 
 from .. import constants as cn
@@ -70,7 +70,10 @@ def build_function_graph(
             traversed_ops=traversed_ops,
         )
 
-        if "Tosa" not in operation.name and "GraphOutputs" not in operation.name:
+        if (
+            "Tosa" not in operation.name
+            and "GraphOutputs" not in operation.name
+        ):
             continue
 
         function_graph.nodes.append(node)

@@ -6,6 +6,7 @@
 
 import json
 import os
+from pathlib import Path
 from typing import Any, Callable, Dict
 
 from .types import (
@@ -24,7 +25,7 @@ class Parser:
     def __init__(
         self,
         model_path: str,
-        spirv_binary_extractor: Callable[[str], Dict[str, Any]],
+        spirv_binary_extractor: Callable[[str], Path],
     ):
         self.model_name = os.path.basename(model_path)
         spv_path = spirv_binary_extractor(os.path.abspath(model_path))

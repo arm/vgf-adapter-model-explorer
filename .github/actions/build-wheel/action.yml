@@ -198,7 +198,6 @@ runs:
           NPROC=$(sysctl -n hw.ncpu)
         fi
         python ${SDK_PATH}/sw/vgf-lib/scripts/build.py -j $NPROC
-        
 
     - name: Copy dependencies
       shell: bash
@@ -228,9 +227,9 @@ runs:
       shell: bash
       run: |
         cd "$WORK_DIR"
-        python -m pip install .[test]
+        python -m pip install . --group dev
         if [ "${{ github.repository_owner }}" != "arm" ]; then
-            python -m pip install .[coverage]
+            python -m pip install . --group coverage
         fi
 
     - name: Update PATH
@@ -269,7 +268,7 @@ runs:
       shell: bash
       run: |
         cd "$WORK_DIR"
-        python -m pip install .[sbom]
+        python -m pip install . --group sbom
         python ./scripts/generate-mlir-bin-sbom.py \
           --llvm-ref ${{ steps.dep-revisions.outputs.llvm-ref }} \
           --model-converter-ref ${{ steps.dep-revisions.outputs.model-converter-ref }} \
@@ -286,7 +285,7 @@ runs:
 
         echo -e "[bdist_wheel]\npython_tag = cp$TAG\nplat_name = ${{ inputs.platform }}" > setup.cfg
 
-        python -m pip install build wheel
+        python -m pip install --group build
         python -m build
 
         mkdir -p wheelhouse

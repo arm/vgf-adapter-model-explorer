@@ -4,7 +4,7 @@
 # Licensed under the Apache License v2.0
 # See http://www.apache.org/licenses/LICENSE-2.0 for license information.
 
-from mlir import ir
+from mlir import ir  # type: ignore[reportMissingImports]
 from model_explorer import graph_builder as gb
 
 from ..constants import GRAPH_INPUT_ANNOTATION

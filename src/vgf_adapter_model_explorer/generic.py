@@ -7,7 +7,7 @@
 from typing import Any, Dict, List, Optional
 
 import numpy as np
-from mlir import ir
+from mlir import ir  # type: ignore[reportMissingImports]
 from model_explorer import graph_builder as gb
 
 from . import constants as cn

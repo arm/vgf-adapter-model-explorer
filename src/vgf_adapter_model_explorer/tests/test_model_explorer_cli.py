@@ -41,6 +41,8 @@ def test_model_explorer_smoke():
     ]
     seen_lines = dict.fromkeys(searched_lines, False)
 
+    assert proc.stdout is not None
+
     for line in proc.stdout:
         if searched_lines[curr_searched] in line:
             seen_lines[searched_lines[curr_searched]] = True

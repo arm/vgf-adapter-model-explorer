@@ -37,30 +37,31 @@ dependencies = [
 Repository = "https://github.com/arm/vgf-adapter-model-explorer"
 Changelog = "https://github.com/arm/vgf-adapter-model-explorer/releases"
 
-[project.optional-dependencies]
-test = [
-    "pytest",
-    "pytest-timeout",
+[dependency-groups]
+dev = [
+    "pytest==9.0.1",
+    "pytest-timeout==2.4.0",
+    "ruff==0.14.2",
+    "pyright==1.1.407",
     "ai-edge-model-explorer==0.1.28"
 ]
-format = [
-  "ruff==0.14.2"
-]
 coverage = [
-  "pytest-cov"
+    "pytest-cov==7.0.0",
+]
+build = [
+    "build==1.3.0",
+    "wheel==0.45.1"
 ]
 sbom = [
   "spdx-tools==0.8.3"
 ]
 
 [tool.pyright]
-extraPaths = [
-    ".",
-    "./src",
+include = [
+  "src",
 ]
-autoSearchPaths = true
-useLibraryCodeForTypes = true
-diagnosticMode = "workspace"
+typeCheckingMode = "standard"
+
 
 [tool.setuptools]
 include-package-data = true
@@ -84,7 +85,7 @@ testpaths = ["src/vgf_adapter_model_explorer/tests"]
 
 [tool.ruff]
 line-length = 79
-target-version = "py312"
+target-version = "py310"
 
 [tool.ruff.lint]
 # https://docs.astral.sh/ruff/rules/
