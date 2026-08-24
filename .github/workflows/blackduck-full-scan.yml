@@ -1,0 +1,45 @@
+name: Black Duck Full Scan
+
+on:
+  workflow_dispatch:
+    inputs:
+      project-version:
+        description: "Black Duck project version name, for example 0.4.1 or pr-29-<sha>."
+        required: true
+        type: string
+      project-name:
+        description: "Black Duck project name. Leave empty to use the repository name."
+        required: false
+        default: ""
+        type: string
+      source-path:
+        description: "Path to scan."
+        required: false
+        default: "."
+        type: string
+      python-dependencies:
+        description: "Install requirement*.txt files into a venv and pass it to Detect."
+        required: true
+        default: false
+        type: boolean
+      snippet-matching:
+        description: "Enable Black Duck snippet matching."
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+
+jobs:
+  blackduck:
+    if: ${{ github.event.repository.private }}
+    uses: Arm-Debug/github-workflow-wizardry/.github/workflows/blackduck-full-scan.yml@main
+    with:
+      project-name: ${{ inputs['project-name'] }}
+      project-version: ${{ inputs['project-version'] }}
+      source-path: ${{ inputs['source-path'] }}
+      python-dependencies: ${{ inputs['python-dependencies'] }}
+      snippet-matching: ${{ inputs['snippet-matching'] }}
+    secrets:
+      BLACKDUCK_API_TOKEN: ${{ secrets.BLACKDUCK_API_TOKEN }}

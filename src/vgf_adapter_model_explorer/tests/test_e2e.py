@@ -1,8 +1,5 @@
-# SPDX-FileCopyrightText: Copyright 2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+# SPDX-FileCopyrightText: Copyright 2025-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
 # SPDX-License-Identifier: Apache-2.0
-#
-# Licensed under the Apache License v2.0
-# See http://www.apache.org/licenses/LICENSE-2.0 for license information.
 
 import glob
 import json
@@ -12,9 +9,7 @@ from dataclasses import asdict
 import pytest
 
 from ..builder import builder
-from ..exec.vgf_dump import exec_vgf_dump
 from ..parser import parser
-from ..spirv.spirv_node_builder import build_spirv_nodes
 
 FIXTURES_ROOT = os.path.join(os.path.dirname(__file__), "fixtures")
 
@@ -32,12 +27,13 @@ def test_e2e(case_dir):
     input_vgf = os.path.join(case_dir, "input.vgf")
     expected_json = os.path.join(case_dir, "expected.json")
 
-    vgf = parser.Parser(input_vgf, exec_vgf_dump).vgf
-    graph_collection = builder.VgfGraphBuilder(
-        vgf, build_spirv_nodes
-    ).graph_collection
+    vgf = parser.Parser(input_vgf).vgf
+    graph_collection = builder.VgfGraphBuilder(vgf).graph_collection
 
     got = asdict(graph_collection)
+    # Model Explorer 0.1.32 added this default field to GraphCollection. It is
+    # not adapter output, so keep the fixture stable across supported versions.
+    got.pop("graphSorting", None)
 
     with open(expected_json) as f:
         expected = json.load(f)

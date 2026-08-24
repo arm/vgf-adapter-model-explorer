@@ -1,0 +1,16 @@
+name: Codex PR Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  codex-review:
+    if: >-
+      ${{ github.repository_owner != 'arm' &&
+      (github.event.action != 'edited' || github.event.changes.base != null) }}
+    uses: Arm-Debug/github-workflow-wizardry/.github/workflows/codex-pr-review.yaml@27305540a211e580b65936d2a2fc9e45781d803e
+    with:
+      codex_proxy_url: ${{ vars.CODEX_PROXY_URL }}
+    secrets:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}

@@ -1,0 +1,165 @@
+name: Manual Validation
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch, tag, SHA, or refs/pull/<number>/head to validate. Leave empty to use the selected workflow ref."
+        required: false
+        type: string
+      build-wheel:
+        description: "Build the wheel and upload it as a workflow artifact."
+        required: true
+        default: true
+        type: boolean
+      internal-dev-version:
+        description: "Use a unique internal development version for the built wheel."
+        required: true
+        default: true
+        type: boolean
+      qlty-check:
+        description: "Run Qlty checks."
+        required: true
+        default: true
+        type: boolean
+      qlty-check-all:
+        description: "Run Qlty across the whole repository instead of only changed files."
+        required: true
+        default: true
+        type: boolean
+      publish-internal-pypi:
+        description: "Publish the built wheel to internal PyPI/Artifactory. Only works from the internal repository."
+        required: true
+        default: false
+        type: boolean
+
+env:
+  DEFAULT_PY_VERSION: "3.10"
+
+permissions:
+  contents: read
+
+jobs:
+  qlty:
+    name: Qlty checks
+    if: ${{ inputs['qlty-check'] }}
+    runs-on: ${{ vars.LINUX_RUNNER || 'ubuntu-latest' }}
+    steps:
+      - name: Checkout plugin repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          persist-credentials: false
+
+      - name: Install Qlty
+        uses: qltysh/qlty-action/install@a2277a908db90c4c868832fb9204521fb940fdb4 # v1.2.0
+
+      - name: Run Qlty
+        env:
+          QLTY_CHECK_ALL: ${{ inputs['qlty-check-all'] }}
+        run: |
+          if [[ "$QLTY_CHECK_ALL" == "true" ]]; then
+            qlty check --all
+          else
+            qlty check
+          fi
+
+  build-wheel:
+    name: Build wheel
+    if: ${{ inputs['build-wheel'] }}
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+    runs-on: ${{ vars.LINUX_RUNNER || 'ubuntu-latest' }}
+    steps:
+      - name: Checkout plugin repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+          persist-credentials: false
+
+      - uses: ./.github/actions/build-wheel
+        env:
+          PIP_INDEX_URL: https://pypi.org/simple
+        with:
+          python-version: ${{ matrix.python-version }}
+          internal-dev-version: ${{ inputs['internal-dev-version'] }}
+          artifact-name: dist-py${{ matrix.python-version }}
+          build-sdist: ${{ matrix.python-version == env.DEFAULT_PY_VERSION }}
+
+      - name: Create wheel SBOM output directory
+        if: matrix.python-version == env.DEFAULT_PY_VERSION
+        run: mkdir -p sbom
+
+      - name: Generate wheel SBOM
+        if: matrix.python-version == env.DEFAULT_PY_VERSION
+        env:
+          PIP_INDEX_URL: https://pypi.org/simple
+        run: |
+          python -m pip install --index-url https://pypi.org/simple cyclonedx-bom==7.3.0
+          python -m venv .sbom-venv
+          .sbom-venv/bin/python -m pip install --upgrade pip
+          .sbom-venv/bin/python -m pip install dist/*.whl
+          python -m cyclonedx_py environment .sbom-venv/bin/python \
+            --output-format JSON \
+            --output-file sbom/vgf-adapter-model-explorer-wheel.cdx.json
+
+      - name: Add SBOM disclaimer
+        if: matrix.python-version == env.DEFAULT_PY_VERSION
+        run: |
+          python scripts/add-sbom-disclaimer.py \
+            sbom/vgf-adapter-model-explorer-wheel.cdx.json
+
+      - name: Download adapter SBOMs
+        if: matrix.python-version == env.DEFAULT_PY_VERSION
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/download-adapter-sboms.py \
+            --github-token "$GITHUB_TOKEN"
+
+      - name: Upload wheel SBOM artifact
+        if: matrix.python-version == env.DEFAULT_PY_VERSION
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: project-sbom
+          path: |
+            sbom/**/*.json
+            sbom/dependencies/adapter-sbom-manifest.json
+          if-no-files-found: error
+
+  publish-internal-pypi:
+    name: Publish wheel to internal PyPI
+    if: ${{ inputs['publish-internal-pypi'] && inputs['build-wheel'] && github.repository_owner != 'arm' }}
+    needs:
+      - build-wheel
+    runs-on: ${{ vars.LINUX_RUNNER || 'ubuntu-latest' }}
+    environment:
+      name: internal-pypi
+    permissions: {}
+    steps:
+      - name: Require internal development version
+        env:
+          INTERNAL_DEV_VERSION: ${{ inputs['internal-dev-version'] }}
+        run: |
+          if [[ "$INTERNAL_DEV_VERSION" != "true" ]]; then
+            echo "Manual internal publishing requires internal-dev-version=true to avoid version collisions."
+            exit 1
+          fi
+
+      - name: Download distribution artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: dist-py*
+          path: dist/
+          merge-multiple: true
+
+      - name: Publish distribution to internal PyPI
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # release/v1.12.4
+        with:
+          repository-url: ${{ vars.INTERNAL_PYPI_UPLOAD_URL }}
+          user: ${{ secrets.INTERNAL_PYPI_USERNAME }}
+          password: ${{ secrets.INTERNAL_PYPI_TOKEN }}
+          packages-dir: dist/
+          attestations: false

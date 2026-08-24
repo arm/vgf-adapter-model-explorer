@@ -17,6 +17,7 @@ jobs:
             const current = pr.body || "";
             const toAppend = `\n\nLink to PR: ${pr.html_url}`;
             const newBody = current + toAppend;
+
             await github.rest.pulls.update({
               owner: context.repo.owner,
               repo: context.repo.repo,

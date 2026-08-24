@@ -1,9 +1,6 @@
 config_version = "0"
 
 exclude_patterns = [
-  "*_min.*",
-  "*-min.*",
-  "*.min.*",
   "**/.yarn/**",
   "**/*.d.ts",
   "**/assets/**",
@@ -27,6 +24,7 @@ exclude_patterns = [
   "**/templates/**",
   "**/testdata/**",
   "**/vendor/**",
+  "**/executorch_flatbuffer/**",
 ]
 
 test_patterns = [
@@ -43,7 +41,30 @@ test_patterns = [
 [smells]
 mode = "comment"
 
+[[plugin]]
+name = "gitleaks"
+mode = "block"
+
+[[plugin]]
+name = "bandit"
+mode = "comment"
+
+[[plugin]]
+name = "osv-scanner"
+mode = "monitor"
+
+[[plugin]]
+name = "actionlint"
+mode = "comment"
+
+[[plugin]]
+name = "zizmor"
+mode = "comment"
+
+[[exclude]]
+file_patterns = ["**/tests/**"]
+plugins = ["bandit"]
+
 [[source]]
 name = "default"
 default = true
-

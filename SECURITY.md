@@ -1,3 +1,8 @@
+<!---
+SPDX-FileCopyrightText: Copyright 2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
+SPDX-License-Identifier: Apache-2.0
+--->
+
 **Reporting vulnerabilities**
 
 Arm takes security issues seriously and welcomes feedback from researchers and the security community in order to improve the security of its products and services. We operate a coordinated disclosure policy for disclosing vulnerabilities and other security issues.

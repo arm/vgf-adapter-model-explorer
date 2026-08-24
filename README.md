@@ -1,3 +1,8 @@
+<!---
+SPDX-FileCopyrightText: Copyright 2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
+SPDX-License-Identifier: Apache-2.0
+--->
+
 # VGF Adapter for Model Explorer
 
 VGF Adapter for [google-ai-edge/model-explorer](https://github.com/google-ai-edge/model-explorer) that enables visualization of VGF files from the [Arm ML SDK for Vulkan®](https://github.com/arm/ai-ml-sdk-for-vulkan).
@@ -6,7 +11,7 @@ VGF Adapter for [google-ai-edge/model-explorer](https://github.com/google-ai-edg
 
 ## Requirements
 
-- Python >=3.10, <3.14
+- Python >=3.10, <3.13
 
 ## Supported Platforms
 

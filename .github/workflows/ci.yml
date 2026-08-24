@@ -12,71 +12,148 @@ on:
     - cron: "0 3 */6 * *"
 
 env:
+  DEFAULT_PY_VERSION: "3.10"
   ME_REPO_ACCESS_APP_ID: ${{ secrets.ME_REPO_ACCESS_APP_ID }}
   ME_REPO_ACCESS_PRIVATE_KEY: ${{ secrets.ME_REPO_ACCESS_PRIVATE_KEY }}
 
-jobs:
-  build-x64:
-    name: Build (x64)
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
-        target: [linux, windows]
-        include:
-          - target: linux
-            runner: ${{ vars.LINUX_X64_RUNNER }}
-            platform: manylinux_2_35_x86_64
-          - target: windows
-            runner: ${{ vars.WINDOWS_X64_RUNNER }}
-            platform: win_amd64
-    runs-on: ${{ matrix.runner }}
-    steps:
-      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: ./.github/actions/build-wheel
-        with:
-          runner: ${{ matrix.runner }}
-          python-version: ${{ matrix.python-version }}
-          platform: ${{ matrix.platform }}
-          arch: x64
-          qlty_coverage_token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+permissions:
+  contents: read
 
-  build-arm64:
-    if: ${{ !github.event.repository.private }}
-    name: Build (arm64)
+jobs:
+  tests:
+    name: Run tests
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.10", "3.11", "3.12", "3.13"]
-        target: [linux, macos]
-        include:
-          - target: linux
-            runner: ubuntu-22.04-arm
-            platform: manylinux_2_35_aarch64
-          - target: macos
-            runner: macos-14
-            platform: macosx_12_0_arm64
+        python-version: ["3.10", "3.11", "3.12"]
+        runner: ${{ fromJSON(vars.TEST_RUNNERS) }}
+    runs-on: ${{ matrix.runner }}
+    env:
+      HATCH_DATA_DIR: ${{ github.workspace }}/.hatch-data-py${{ matrix.python-version }}
+      HATCH_CACHE_DIR: ${{ github.workspace }}/.hatch-cache-py${{ matrix.python-version }}
+    steps:
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Checkout plugin repo
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+
+      - name: Install Hatch
+        env:
+          PIP_INDEX_URL: ${{ secrets.INTERNAL_PYPI_AUTH_INDEX_URL || 'https://pypi.org/simple' }}
+        run: |
+          python -m pip install hatch==1.14.1 virtualenv==20.26.6
+
+      - name: Lint and Format Check
+        run: |
+          hatch run ci:lint
+          hatch run ci:format-check
+
+      - name: Type Check
+        run: |
+          hatch run ci:type-check
+
+      - name: Run Tests
+        shell: bash
+        env:
+          PIP_INDEX_URL: ${{ secrets.INTERNAL_PYPI_AUTH_INDEX_URL || 'https://pypi.org/simple' }}
+          MATRIX_RUNNER: ${{ matrix.runner }}
+          LINUX_RUNNER: ${{ vars.LINUX_RUNNER }}
+          MATRIX_PYTHON_VERSION: ${{ matrix.python-version }}
+          DEFAULT_PY_VERSION: ${{ env.DEFAULT_PY_VERSION }}
+        run: |
+          PYTEST_CVG_FLAGS=""
+          if [[ "$MATRIX_RUNNER" == "$LINUX_RUNNER" && \
+              "$MATRIX_PYTHON_VERSION" == "$DEFAULT_PY_VERSION" ]]; then
+            PYTEST_CVG_FLAGS="-v --cov=vgf_adapter_model_explorer --cov-report=lcov:reports/lcov.info"
+          fi
+          hatch run ci:test -- ${PYTEST_CVG_FLAGS}
+
+      - name: Upload coverage to Qlty
+        if: matrix.runner == vars.LINUX_RUNNER && matrix.python-version == env.DEFAULT_PY_VERSION
+        uses: qltysh/qlty-action/coverage@9e8e09dfc3d82a968f4034f5265eaf3c142881f7 # v2.0.0
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: reports/lcov.info
+
+  build:
+    name: Build Package
+    needs: [tests]
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+        runner: ${{ fromJSON(vars.TEST_RUNNERS) }}
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: ./.github/actions/build-wheel
         with:
-          runner: ${{ matrix.runner }}
+          persist-credentials: false
+
+      - uses: ./.github/actions/build-wheel
+        env:
+          PIP_INDEX_URL: ${{ secrets.INTERNAL_PYPI_AUTH_INDEX_URL || 'https://pypi.org/simple' }}
+        with:
           python-version: ${{ matrix.python-version }}
-          platform: ${{ matrix.platform }}
-          arch: arm64
+          internal-dev-version: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner != 'arm' }}
+          artifact-name: dist-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}
+          build-sdist: ${{ runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION }}
+
+      - name: Create wheel SBOM output directory
+        if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION
+        run: mkdir -p sbom
+
+      - name: Generate wheel SBOM
+        if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION
+        env:
+          PIP_INDEX_URL: ${{ secrets.INTERNAL_PYPI_AUTH_INDEX_URL || 'https://pypi.org/simple' }}
+        run: |
+          python -m pip install --index-url https://pypi.org/simple cyclonedx-bom==7.3.0
+          python -m venv .sbom-venv
+          .sbom-venv/bin/python -m pip install --upgrade pip
+          .sbom-venv/bin/python -m pip install dist/*.whl
+          python -m cyclonedx_py environment .sbom-venv/bin/python \
+            --output-format JSON \
+            --output-file sbom/vgf-adapter-model-explorer-wheel.cdx.json
+
+      - name: Add SBOM disclaimer
+        if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION
+        run: |
+          python scripts/add-sbom-disclaimer.py \
+            sbom/vgf-adapter-model-explorer-wheel.cdx.json
+
+      - name: Download adapter SBOMs
+        if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          python scripts/download-adapter-sboms.py \
+            --github-token "$GITHUB_TOKEN"
+
+      - name: Upload wheel SBOM artifact
+        if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: project-sbom
+          path: |
+            sbom/**/*.json
+            sbom/dependencies/adapter-sbom-manifest.json
+          if-no-files-found: error
 
   release:
     name: Release
     if: startsWith(github.ref, 'refs/tags/') && github.repository_owner == 'arm'
     needs:
-      - build-x64
-      - build-arm64
+      - build
     runs-on: ubuntu-latest
     environment:
       name: pypi
       url: https://pypi.org/p/vgf-adapter-model-explorer
     permissions:
+      contents: read
       id-token: write
 
     steps:
@@ -86,13 +163,14 @@ jobs:
           app_id: ${{ env.ME_REPO_ACCESS_APP_ID }}
           private_key: ${{ env.ME_REPO_ACCESS_PRIVATE_KEY }}
 
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
           token: ${{ steps.get_app_token.outputs.token }}
+          persist-credentials: false
 
       - name: Generate release notes
-        uses: orhun/git-cliff-action@4a4a951bc43fafe41cd2348d181853f52356bee7 # v4.4.2
+        uses: orhun/git-cliff-action@d77b37db2e3f7398432d34b72a12aa3e2ba87e51 # v4.6.0
         id: git-cliff
         with:
           config: cliff.toml
@@ -102,44 +180,86 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_REPO: ${{ github.repository }}
 
-      - name: Download all wheel artifacts
+      - name: Download distribution artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
-          pattern: python-wheels-*
+          pattern: dist-*
           path: dist/
           merge-multiple: true
 
       - name: Publish distribution to PyPI
         uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # release/v1.12.4
 
+      - name: Download project SBOM
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: project-sbom
+          path: sbom/
+
       - name: Publish GitHub release
-        uses: softprops/action-gh-release@72f2c25fcb47643c292f7107632f7a47c1df5cd8 # v2.3.2
+        uses: softprops/action-gh-release@5be0e66d93ac7ed76da52eca8bb058f665c3a5fe # v2.4.2
         with:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
           body_path: CHANGELOG.md
-          files: dist/*.whl
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+            sbom/**/*.json
           token: ${{ steps.get_app_token.outputs.token }}
+
+  release-internal:
+    name: Release to internal PyPI
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/')) && github.repository_owner != 'arm'
+    needs:
+      - build
+    runs-on: ${{ vars.LINUX_RUNNER }}
+    permissions: {}
+
+    steps:
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
+        with:
+          python-version: ${{ env.DEFAULT_PY_VERSION }}
+
+      - name: Download distribution artifacts
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          pattern: dist-*
+          path: dist/
+          merge-multiple: true
+
+      - name: Publish distribution to internal PyPI
+        uses: pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc # release/v1.12.4
+        with:
+          repository-url: ${{ vars.INTERNAL_PYPI_UPLOAD_URL }}
+          user: ${{ secrets.INTERNAL_PYPI_USERNAME }}
+          password: ${{ secrets.INTERNAL_PYPI_TOKEN }}
+          packages-dir: dist/
+          attestations: false
 
   sync-commits-to-public-repo:
     name: Sync commits to public repo
     if: github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner != 'arm'
-    needs: build-x64
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
+          persist-credentials: true
       - name: Checkout target repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: arm/vgf-adapter-model-explorer
           token: ${{ secrets.ARM_ORG_TOKEN }}
           path: target-repo
+          persist-credentials: true
       - name: Push commits to public repo
+        env:
+          SOURCE_URL: ${{ github.server_url }}/${{ github.repository }}
         run: |
           cd target-repo
-          git remote add source ${{ github.server_url }}/${{ github.repository }}
+          git remote add source "$SOURCE_URL"
           git fetch source main
           git checkout main
           git merge source/main
@@ -153,15 +273,20 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           fetch-depth: 0
+          persist-credentials: true
       - name: Checkout target repository
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: arm/vgf-adapter-model-explorer
           token: ${{ secrets.ARM_ORG_TOKEN }}
           path: target-repo
+          persist-credentials: true
       - name: Push tags to public repo
+        env:
+          REF_NAME: ${{ github.ref_name }}
+          SOURCE_URL: ${{ github.server_url }}/${{ github.repository }}
         run: |
           cd target-repo
-          git remote add source ${{ github.server_url }}/${{ github.repository }}
+          git remote add source "$SOURCE_URL"
           git fetch source --tags
-          git push origin ${{ github.ref_name }}
+          git push origin "refs/tags/$REF_NAME"

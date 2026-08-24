@@ -1,10 +1,7 @@
-# SPDX-FileCopyrightText: Copyright 2025 Arm Limited and/or its affiliates <open-source-office@arm.com>
+# SPDX-FileCopyrightText: Copyright 2025-2026 Arm Limited and/or its affiliates <open-source-office@arm.com>
 # SPDX-License-Identifier: Apache-2.0
-#
-# Licensed under the Apache License v2.0
-# See http://www.apache.org/licenses/LICENSE-2.0 for license information.
 
-from typing import Dict
+from dataclasses import dataclass
 
 from model_explorer import (
     Adapter,
@@ -12,10 +9,28 @@ from model_explorer import (
     ModelExplorerGraphs,
 )
 
+try:
+    from model_explorer import (
+        AdapterGetConfigEditorsResult,  # type: ignore[reportAttributeAccessIssue]
+    )
+    from model_explorer.config_editor import SlideToggleConfigEditor
+except ImportError:
+    # Older Model Explorer versions do not support adapter-provided settings.
+    # Keep this adapter importable there; conversion will simply use the
+    # default value from settings.get(..., False) below.
+    @dataclass
+    class AdapterGetConfigEditorsResult:  # type: ignore[no-redef]
+        """Fallback shape for older Model Explorer versions."""
+
+        configEditors: list | None = None
+        error: str = ""
+
+    SlideToggleConfigEditor = None  # type: ignore[assignment]
+
 from .builder.builder import VgfGraphBuilder
-from .exec.vgf_dump import exec_vgf_dump
 from .parser.parser import Parser
-from .spirv.spirv_node_builder import build_spirv_nodes
+
+SHOW_CONSTANTS_SETTING = "show_constants"
 
 
 class VGFAdapter(Adapter):  # pylint: disable=too-few-public-methods
@@ -28,16 +43,32 @@ class VGFAdapter(Adapter):  # pylint: disable=too-few-public-methods
         fileExts=["vgf"],
     )
 
-    def __init__(self):
-        super().__init__()
+    def get_config_editors(self) -> AdapterGetConfigEditorsResult:
+        """Expose VGF-specific conversion settings when supported."""
 
-    # pylint: disable-next=unused-argument
-    def convert(self, model_path: str, settings: Dict) -> ModelExplorerGraphs:
+        if SlideToggleConfigEditor is None:
+            return AdapterGetConfigEditorsResult(configEditors=[])
+
+        return AdapterGetConfigEditorsResult(
+            configEditors=[
+                SlideToggleConfigEditor(
+                    id=SHOW_CONSTANTS_SETTING,
+                    label="Show constants",
+                    defaultValue=False,
+                    help="Show VGF constants as graph nodes.",
+                )
+            ]
+        )
+
+    def convert(self, model_path: str, settings: dict) -> ModelExplorerGraphs:
         """Convert a given model to a model-explorer compatible format."""
 
-        vgf = Parser(model_path, exec_vgf_dump).vgf
+        vgf = Parser(model_path).vgf
+        show_constants = bool(settings.get(SHOW_CONSTANTS_SETTING, False))
         return {
-            "graphs": VgfGraphBuilder(
-                vgf, build_spirv_nodes
-            ).graph_collection.graphs
+            "graphCollections": [
+                VgfGraphBuilder(
+                    vgf, show_constants=show_constants
+                ).graph_collection
+            ]
         }

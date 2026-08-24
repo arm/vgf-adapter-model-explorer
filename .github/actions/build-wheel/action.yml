@@ -2,310 +2,88 @@ name: Build wheel (composite)
 description: Builds wheels for VGF Adapter for Model Explorer
 
 inputs:
-  runner:
-    description: GitHub Actions runner OS (e.g. ubuntu-latest, macos-latest)
-    required: true
   python-version:
-    description: Python version to use for building (e.g. 3.9, 3.10, 3.11)
     required: true
-  platform:
-    description: Platform tag for wheel naming (e.g. manylinux_2_17_x86_64)
-    required: true
-  arch:
-    description: Target architecture (e.g. x86_64, arm64)
-    required: true
-  qlty_coverage_token:
-    description: Authentication token for uploading coverage reports to Qlty
-    required: true
+  internal-dev-version:
+    required: false
+    default: "false"
+  artifact-name:
+    required: false
+    default: dist
+  build-sdist:
+    required: false
+    default: "false"
 
 runs:
   using: "composite"
   steps:
-    - name: Checkout plugin repo
-      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-
-    - name: Create short path mapping (Windows)
-      if: runner.os == 'Windows'
-      shell: cmd
-      run: |
-        subst B: %CD%
-
-    - name: Set working directory and PATH separator
-      shell: bash
-      run: |
-        if [[ "$RUNNER_OS" == "Windows" ]]; then
-          echo "WORK_DIR=/b" >> "$GITHUB_ENV"
-          echo "PATH_SEP=;" >> "$GITHUB_ENV"
-        else
-          echo "WORK_DIR=$GITHUB_WORKSPACE" >> "$GITHUB_ENV"
-          echo "PATH_SEP=:" >> "$GITHUB_ENV"
-        fi
-
     - name: Set up Python environment
       uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5.6.0
       with:
         python-version: ${{ inputs.python-version }}
 
-    - name: Configure Git for long paths (Windows)
-      if: runner.os == 'Windows'
+    - name: Ensure pip is available
       shell: bash
       run: |
-        git config --global core.longpaths true
-        git config --global core.autocrlf false
+        python -m ensurepip --upgrade || {
+          curl -sS https://bootstrap.pypa.io/get-pip.py -o "$RUNNER_TEMP/get-pip.py"
+          python "$RUNNER_TEMP/get-pip.py"
+        }
+        python -m pip install --upgrade pip
 
-    - name: Install dependencies (Linux)
-      if: runner.os == 'Linux'
+    - name: Set internal development version
+      if: inputs.internal-dev-version == 'true'
       shell: bash
       run: |
-        sudo apt-get update
-        sudo apt-get install -y repo ninja-build clang lld
+        BASE_VERSION=$(sed -n 's/^version = "\(.*\)"$/\1/p' pyproject.toml | head -n 1)
+        SHORT_SHA="${GITHUB_SHA::7}"
+        DEV_VERSION="${BASE_VERSION}.dev${GITHUB_RUN_NUMBER}+${SHORT_SHA}"
+        echo "Building internal development version ${DEV_VERSION} from ${GITHUB_SHA}"
+        sed -i "s/^version = \".*\"$/version = \"${DEV_VERSION}\"/" pyproject.toml
 
-    - name: Install dependencies (macOS)
-      if: runner.os == 'macOS'
+    - name: Prepare wheel build metadata
+      shell: bash
+      env:
+        PYTHON_VERSION: ${{ inputs.python-version }}
+      run: |
+        case "$PYTHON_VERSION" in
+          "3.10") echo "CIBW_BUILD=cp310-*" >> "$GITHUB_ENV" ;;
+          "3.11") echo "CIBW_BUILD=cp311-*" >> "$GITHUB_ENV" ;;
+          "3.12") echo "CIBW_BUILD=cp312-*" >> "$GITHUB_ENV" ;;
+          "3.13") echo "CIBW_BUILD=cp313-*" >> "$GITHUB_ENV" ;;
+          *) echo "Unsupported Python version: $PYTHON_VERSION" >&2; exit 1 ;;
+        esac
+
+    - name: Build plugin package
+      shell: bash
+      env:
+        CIBW_ARCHS: auto64
+        CIBW_BEFORE_BUILD_LINUX: "python -m pip install cmake ninja pybind11==3.0.1 scikit-build-core==0.11.6"
+        CIBW_BEFORE_BUILD_MACOS: "python -m pip install cmake ninja pybind11==3.0.1 scikit-build-core==0.11.6"
+        CIBW_BEFORE_BUILD_WINDOWS: "python -m pip install cmake ninja pybind11==3.0.1 scikit-build-core==0.11.6"
+        CIBW_BUILD_VERBOSITY: 1
+        CIBW_ENVIRONMENT: PIP_INDEX_URL=${{ env.PIP_INDEX_URL || 'https://pypi.org/simple' }}
+        CIBW_ENVIRONMENT_MACOS: PIP_INDEX_URL=${{ env.PIP_INDEX_URL || 'https://pypi.org/simple' }} MACOSX_DEPLOYMENT_TARGET=11.0
+        CIBW_ENVIRONMENT_WINDOWS: PIP_INDEX_URL=${{ env.PIP_INDEX_URL || 'https://pypi.org/simple' }}
+        CIBW_MANYLINUX_AARCH64_IMAGE: manylinux_2_28
+        CIBW_MANYLINUX_X86_64_IMAGE: manylinux_2_28
+        CIBW_SKIP: "*-musllinux_*"
+      run: |
+        python -m pip install cibuildwheel==2.23.3
+        python -m cibuildwheel --output-dir wheelhouse
+
+        mkdir -p dist
+        mv wheelhouse/*.whl dist/
+
+    - name: Build source distribution
+      if: inputs.build-sdist == 'true' && runner.os == 'Linux' && runner.arch == 'X64'
       shell: bash
       run: |
-        brew install repo ninja lld
+        python -m pip install build
+        python -m build --sdist
 
-    - name: Set up MSVC (Windows)
-      if: runner.os == 'Windows'
-      uses: ilammy/msvc-dev-cmd@0b201ec74fa43914dc39ae48a89fd1d8cb592756 # v1.13.0
-
-    - name: Install dependencies (Windows)
-      if: runner.os == 'Windows'
-      shell: bash
-      run: |
-        mkdir -p ~/.bin
-        curl https://storage.googleapis.com/git-repo-downloads/repo > ~/.bin/repo
-        chmod a+rx ~/.bin/repo
-        echo "$HOME/.bin" >> $GITHUB_PATH
-
-        choco install -y cmake
-
-    - name: Clone Model Converter and patch LLVM
-      shell: bash
-      run: |
-        cd "$WORK_DIR"
-        # repo requires an attached HEAD to grab the manifest
-        git branch --force __ci_manifest
-        git checkout __ci_manifest
-        mkdir -p c && cd c
-
-        repo_args=(
-          -u ..
-          -m dependencies.xml
-          --depth 1
-          -g model-converter
-        )
-        if [[ "$RUNNER_OS" == "Windows" ]]; then
-          # Jira: DEML-843
-          repo_args+=(--no-repo-verify)
-        fi
-        repo init "${repo_args[@]}"
-        repo sync --no-clone-bundle
-
-        cd dependencies/llvm-project
-        patch -p1 < ../../sw/model-converter/patches/llvm.patch
-
-    - name: Extract dependency revisions from manifest
-      id: dep-revisions
-      shell: bash
-      run: |
-        cd "$WORK_DIR/c/.repo/manifests"
-        LLVM_REV=$(sed -n 's/.*path="dependencies\/llvm-project".*revision="\([^"]*\)".*/\1/p' dependencies.xml)
-        MC_REV=$(sed -n 's/.*path="sw\/model-converter".*revision="\([^"]*\)".*/\1/p' dependencies.xml)
-        echo "llvm-ref=$LLVM_REV" >> $GITHUB_OUTPUT
-        echo "model-converter-ref=$MC_REV" >> $GITHUB_OUTPUT
-
-    - name: Restore LLVM build cache
-      uses: actions/cache@v4
-      id: cache-llvm
-      with:
-        path: |
-          c/dependencies/llvm-project/b/tools/mlir/python_packages
-          c/dependencies/llvm-project/b/tools/mlir/python
-          c/dependencies/llvm-project/b/bin
-
-        key: llvm-${{ steps.dep-revisions.outputs.llvm-ref }}-${{ runner.os }}-${{ runner.arch }}-${{ inputs.python-version }}
-
-    - name: Build LLVM
-      if: steps.cache-llvm.outputs.cache-hit != 'true'
-      shell: bash
-      run: |
-        cd "$WORK_DIR/c/dependencies/llvm-project"
-        pip install -r mlir/python/requirements.txt
-
-        NANOBIND_DIR="$(python -c 'import nanobind, pathlib; print(pathlib.Path(nanobind.cmake_dir()).as_posix())')"
-        PYB_DIR="$(python -c 'import pybind11, pathlib; print(pathlib.Path(pybind11.get_cmake_dir()).as_posix())')"
-        PYTHON_EXEC="$(python -c 'import sys, pathlib; print(pathlib.Path(sys.executable).as_posix())')"
-
-        mkdir b && cd b
-
-        # Platform-specific compiler settings
-        if [[ "$RUNNER_OS" == "Windows" ]]; then
-          C_COMPILER=cl
-          CXX_COMPILER=cl
-        else
-          C_COMPILER=clang
-          CXX_COMPILER=clang++
-        fi
-
-        cmake_args=(
-          -G Ninja
-          ../llvm
-          # Build configuration
-          -DCMAKE_BUILD_TYPE=Release
-          -DCMAKE_C_COMPILER="$C_COMPILER"
-          -DCMAKE_CXX_COMPILER="$CXX_COMPILER"
-          # LLVM/MLIR configuration
-          -DLLVM_ENABLE_PROJECTS=mlir
-          -DLLVM_TARGETS_TO_BUILD="Native"
-          -DLLVM_ENABLE_RTTI=ON
-          -DLLVM_ENABLE_EH=ON
-          -DLLVM_ENABLE_ASSERTIONS=ON
-          -DLLVM_ABI_BREAKING_CHECKS=FORCE_OFF
-          -DLLVM_ENABLE_TERMINFO=OFF
-          # MLIR Python bindings
-          -DMLIR_ENABLE_BINDINGS_PYTHON=ON
-          -DPython3_EXECUTABLE="$PYTHON_EXEC"
-          -DPython3_FIND_VIRTUALENV=FIRST
-          -DPython3_FIND_STRATEGY=LOCATION
-          -Dpybind11_DIR="$PYB_DIR"
-          -Dnanobind_DIR="$NANOBIND_DIR"
-        )
-
-        # Platform-specific linker settings
-        if [[ "$RUNNER_OS" == "Windows" ]]; then
-          cmake_args+=(
-            -DCMAKE_LINKER=link.exe
-            -DLLVM_USE_LINKER=link
-            -DCMAKE_OBJECT_PATH_MAX=500
-          )
-        else
-          cmake_args+=(-DLLVM_ENABLE_LLD=ON)
-        fi
-
-        cmake "${cmake_args[@]}"
-        cmake --build . --target mlir-translate MLIRPythonModules mlir-tblgen MLIROptLib
-
-    - name: Build VGF Lib
-      shell: bash
-      run: |
-        cd "$WORK_DIR/c"
-        export SDK_PATH="$WORK_DIR/c"
-        if [ "$RUNNER_OS" == "Linux" ] || [ "$RUNNER_OS" == "Windows" ]; then
-          NPROC=$(nproc)
-        else
-          NPROC=$(sysctl -n hw.ncpu)
-        fi
-        python ${SDK_PATH}/sw/vgf-lib/scripts/build.py -j $NPROC
-
-    - name: Copy dependencies
-      shell: bash
-      run: |
-        cd "$WORK_DIR"
-        cp -r c/dependencies/llvm-project/b/tools/mlir/python_packages/mlir_core/mlir src/mlir
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          cp c/sw/vgf-lib/build/vgf_dump/vgf_dump.exe src/vgf_adapter_model_explorer/bin/vgf_dump.exe
-          cp c/dependencies/llvm-project/b/bin/mlir-translate.exe src/vgf_adapter_model_explorer/bin/mlir-translate.exe
-        else
-          cp c/sw/vgf-lib/build/vgf_dump/vgf_dump src/vgf_adapter_model_explorer/bin
-          cp c/dependencies/llvm-project/b/bin/mlir-translate src/vgf_adapter_model_explorer/bin
-        fi
-
-    - name: Clean up and strip binaries (macOS)
-      if: runner.os == 'macOS'
-      shell: bash
-      run: |
-        cd "$WORK_DIR"
-        rm -rf src/mlir/_mlir_libs/include
-        strip src/vgf_adapter_model_explorer/bin/vgf_dump
-        strip src/vgf_adapter_model_explorer/bin/mlir-translate
-        find src/mlir -name "*.so" -exec strip {} \;
-        find src/mlir -name "*.dylib" -exec strip {} \;
-
-    - name: Install plugin Python packages
-      shell: bash
-      run: |
-        cd "$WORK_DIR"
-        python -m pip install . --group dev
-        if [ "${{ github.repository_owner }}" != "arm" ]; then
-            python -m pip install . --group coverage
-        fi
-
-    - name: Update PATH
-      shell: bash
-      run: |
-        echo "$WORK_DIR/c/dependencies/llvm-project/b/bin" >> "$GITHUB_PATH"
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          echo "$WORK_DIR/c/sw/vgf-lib/build/vgf_dump/Release" >> "$GITHUB_PATH"
-        else
-          echo "$WORK_DIR/c/sw/vgf-lib/build/vgf_dump" >> "$GITHUB_PATH"
-        fi
-
-    - name: Run plugin tests
-      shell: bash
-      run: |
-        cd "$WORK_DIR"
-        export PYTHONPATH="$WORK_DIR/c/dependencies/llvm-project/b/tools/mlir/python_packages/mlir_core${PATH_SEP}."
-        pytest --tb=short -v ${{ github.repository_owner != 'arm' && '--cov=vgf_adapter_model_explorer --cov-report=lcov:reports/lcov.info' || '' }}
-
-    - name: Upload coverage to Qlty
-      if: github.repository_owner != 'arm'
-      uses: qltysh/qlty-action/coverage@9e8e09dfc3d82a968f4034f5265eaf3c142881f7 # v2.0.0
-      with:
-        token: ${{ inputs.qlty_coverage_token }}
-        files: reports/lcov.info
-
-    - name: Get version
-      id: get_version
-      shell: bash
-      run: |
-        cd "$WORK_DIR"
-        WHEEL_VERSION=$(python -c "import sys; toml = 'tomllib' if sys.version_info >= (3,11) else 'tomli'; m = __import__(toml); print(m.load(open('pyproject.toml','rb'))['project']['version'])")
-        echo "WHEEL_VERSION=$WHEEL_VERSION" >> "$GITHUB_ENV"
-
-    - name: Add SBOMs
-      shell: bash
-      run: |
-        cd "$WORK_DIR"
-        python -m pip install . --group sbom
-        python ./scripts/generate-mlir-bin-sbom.py \
-          --llvm-ref ${{ steps.dep-revisions.outputs.llvm-ref }} \
-          --model-converter-ref ${{ steps.dep-revisions.outputs.model-converter-ref }} \
-          --wheel-version "$WHEEL_VERSION" \
-          --output src/vgf_adapter_model_explorer/bin/mlir-builds.spdx.json
-        cp c/sw/vgf-lib/ai-ml-sdk-vgf-library.spdx.json src/vgf_adapter_model_explorer/bin
-
-    - name: Build wheel
-      shell: bash
-      run: |
-        cd "$WORK_DIR"
-        TAG="${{ inputs.python-version }}"
-        TAG="${TAG//./}"
-
-        echo -e "[bdist_wheel]\npython_tag = cp$TAG\nplat_name = ${{ inputs.platform }}" > setup.cfg
-
-        python -m pip install --group build
-        python -m build
-
-        mkdir -p wheelhouse
-
-        if [ "$RUNNER_OS" == "Linux" ]; then
-          python -m pip install auditwheel
-          auditwheel repair --plat ${{ inputs.platform }} --strip -w wheelhouse dist/*.whl
-        elif [ "$RUNNER_OS" == "macOS" ]; then
-          python -m pip install delocate
-          delocate-wheel --require-archs ${{ inputs.arch }} -w wheelhouse dist/*.whl
-        else
-          python -m pip install delvewheel
-          python -m delvewheel repair dist/*.whl -w wheelhouse --strip \
-            --add-path "$WORK_DIR/c/dependencies/llvm-project/b/bin" \
-            --add-path "$WORK_DIR/c/dependencies/llvm-project/b/tools/mlir/python_packages/mlir_core/mlir/_mlir_libs" \
-            --namespace-pkg mlir
-        fi
-
-    - name: Upload wheel artifacts
+    - name: Upload plugin package artifact
       uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
       with:
-        name: python-wheels-${{ inputs.platform }}-${{ inputs.arch }}-${{ inputs.python-version }}
-        path: wheelhouse/*.whl
+        name: ${{ inputs.artifact-name }}
+        path: dist
