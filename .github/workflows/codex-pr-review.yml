@@ -9,7 +9,7 @@ jobs:
     if: >-
       ${{ github.repository_owner != 'arm' &&
       (github.event.action != 'edited' || github.event.changes.base != null) }}
-    uses: Arm-Debug/github-workflow-wizardry/.github/workflows/codex-pr-review.yaml@27305540a211e580b65936d2a2fc9e45781d803e
+    uses: Arm-Debug/github-workflow-wizardry/.github/workflows/codex-pr-review.yaml@53cefff20e3f7fd5079e41a258ef812c9fcf3a45
     with:
       codex_proxy_url: ${{ vars.CODEX_PROXY_URL }}
     secrets:
