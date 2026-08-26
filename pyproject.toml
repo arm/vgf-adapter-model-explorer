@@ -10,7 +10,7 @@ requires = [
 
 [project]
 name = "vgf-adapter-model-explorer"
-version = "0.4.1"
+version = "0.5.0"
 description = "Adapter for Model Explorer to support VGF files"
 readme = "README.md"
 requires-python = ">=3.10, <3.13"
