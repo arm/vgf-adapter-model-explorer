@@ -317,6 +317,9 @@ class VgfGraphBuilder:
                 if constant is None:
                     continue
                 if not self.show_constants:
+                    attr.value = self._graph_constant_attr_value(
+                        attr.value, constant
+                    )
                     continue
                 resource_node = self._ensure_resource_node(
                     constant.mrt_index, nodes_by_id
@@ -338,6 +341,14 @@ class VgfGraphBuilder:
                     ),
                 )
                 node.attrs.remove(attr)
+
+    def _graph_constant_attr_value(
+        self, attr_value: str, constant: Constant
+    ) -> str:
+        resource = self.vgf_resources.get(constant.mrt_index)
+        if resource is None:
+            return attr_value
+        return f"{attr_value}: {_format_constant_value(constant, resource)}"
 
     def _connect_segment_outputs(
         self,

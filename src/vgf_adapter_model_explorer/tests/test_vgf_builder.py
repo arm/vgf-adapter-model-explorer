@@ -792,9 +792,8 @@ def test_builder_inlines_multi_segment_vgf_without_constants_by_default(
     assert not any("__output_" in node_id for node_id in nodes)
     assert not any("__resource_" in node_id for node_id in nodes)
     assert _edge_sources(nodes["0__op_17"]) == [("mrt_0", "0", "0")]
-    assert (
-        _attrs(nodes["0__op_17"])["arg1 input2"]
-        == "<graph constant 0> uint8[1]"
+    assert _attrs(nodes["0__op_17"])["arg1 input2"] == (
+        "<graph constant 0> uint8[1]: [10, 11, 12, 13]"
     )
     assert "mrt_10" not in nodes
     assert nodes["mrt_3"].namespace == "alias_group_42"
