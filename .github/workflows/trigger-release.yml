@@ -3,8 +3,9 @@ name: Trigger Release
 # Release flow:
 # - Run *this* workflow from the internal repository.
 # - This will create and push a version bump commit and tag it.
-# - ci.yml's sync job will trigger and sync both the commit and tag to the external repository.
-# - The tag push will trigger the external repository's release job.
+# - ci.yml builds and publishes internally, and syncs main commits to the public repository.
+# - Run sync-release-tag.yml manually when the tag is ready for public release.
+# - That public tag push triggers the external repository's release job, including PyPI.
 
 on:
   workflow_dispatch:

@@ -111,22 +111,12 @@ jobs:
           python scripts/add-sbom-disclaimer.py \
             sbom/vgf-adapter-model-explorer-wheel.cdx.json
 
-      - name: Download adapter SBOMs
-        if: matrix.python-version == env.DEFAULT_PY_VERSION
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          python scripts/download-sboms.py \
-            --github-token "$GITHUB_TOKEN"
-
       - name: Upload wheel SBOM artifact
         if: matrix.python-version == env.DEFAULT_PY_VERSION
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: project-sbom
-          path: |
-            sbom/**/*.json
-            sbom/dependencies/adapter-sbom-manifest.json
+          path: sbom/vgf-adapter-model-explorer-wheel.cdx.json
           if-no-files-found: error
 
   publish-internal-pypi:
