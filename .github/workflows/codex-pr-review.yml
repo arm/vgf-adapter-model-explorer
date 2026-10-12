@@ -13,4 +13,4 @@ jobs:
     with:
       codex_proxy_url: ${{ vars.CODEX_PROXY_URL }}
     secrets:
-      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      OPENAI_PROXY_TOKEN: ${{ secrets.OPENAI_API_KEY }}

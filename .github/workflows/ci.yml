@@ -82,12 +82,8 @@ jobs:
   build:
     name: Build Package
     needs: [tests]
-    strategy:
-      fail-fast: false
-      matrix:
-        python-version: ["3.10", "3.11", "3.12"]
-        runner: ${{ fromJSON(vars.TEST_RUNNERS) }}
     runs-on: ${{ matrix.runner }}
+
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
@@ -97,50 +93,46 @@ jobs:
         env:
           PIP_INDEX_URL: ${{ secrets.INTERNAL_PYPI_AUTH_INDEX_URL || 'https://pypi.org/simple' }}
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
           internal-dev-version: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner != 'arm' }}
-          artifact-name: dist-${{ runner.os }}-${{ runner.arch }}-py${{ matrix.python-version }}
-          build-sdist: ${{ runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION }}
+          artifact-name: dist
+          build-sdist: "true"
 
-      - name: Create wheel SBOM output directory
-        if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION
+      - name: Create SBOM output directory
         run: mkdir -p sbom
 
       - name: Generate wheel SBOM
-        if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION
         env:
           PIP_INDEX_URL: ${{ secrets.INTERNAL_PYPI_AUTH_INDEX_URL || 'https://pypi.org/simple' }}
         run: |
           python -m pip install --index-url https://pypi.org/simple cyclonedx-bom==7.3.0
+
           python -m venv .sbom-venv
           .sbom-venv/bin/python -m pip install --upgrade pip
           .sbom-venv/bin/python -m pip install dist/*.whl
+
           python -m cyclonedx_py environment .sbom-venv/bin/python \
             --output-format JSON \
             --output-file sbom/vgf-adapter-model-explorer-wheel.cdx.json
 
       - name: Add SBOM disclaimer
-        if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION
         run: |
           python scripts/add-sbom-disclaimer.py \
             sbom/vgf-adapter-model-explorer-wheel.cdx.json
 
-      - name: Download adapter SBOMs
-        if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION
+      - name: Download dependency SBOMs
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          python scripts/download-adapter-sboms.py \
+          python scripts/download-dependency-sboms.py \
             --github-token "$GITHUB_TOKEN"
 
       - name: Upload wheel SBOM artifact
-        if: runner.os == 'Linux' && runner.arch == 'X64' && matrix.python-version == env.DEFAULT_PY_VERSION
         uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
         with:
           name: project-sbom
           path: |
             sbom/**/*.json
-            sbom/dependencies/adapter-sbom-manifest.json
           if-no-files-found: error
 
   release:

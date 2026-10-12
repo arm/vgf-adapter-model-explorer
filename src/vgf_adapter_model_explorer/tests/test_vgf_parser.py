@@ -55,8 +55,8 @@ def test_parser_decodes_synthetic_feature_coverage_vgf(tmp_path):
         file_path=str(vgf_path),
         header=Header(
             major=0,
-            minor=4,
-            patch=3,
+            minor=5,
+            patch=0,
             encoder_vulkan_headers_version=123,
             is_latest_version=True,
             is_valid=True,

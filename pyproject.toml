@@ -2,15 +2,12 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [build-system]
-build-backend = "scikit_build_core.build"
-requires = [
-  "pybind11>=2.13",
-  "scikit-build-core>=0.11",
-]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
 
 [project]
 name = "vgf-adapter-model-explorer"
-version = "0.5.0"
+version = "0.5.1"
 description = "Adapter for Model Explorer to support VGF files"
 readme = "README.md"
 requires-python = ">=3.10, <3.13"
@@ -32,6 +29,7 @@ classifiers = [
 dependencies = [
   "ai-edge-model-explorer>=0.1.26,<0.2.0",
   "spirv-adapter-model-explorer == 0.2.0",
+  "ai-ml-sdk-vgf-library == 0.11.0",
 ]
 
 [project.urls]
@@ -44,48 +42,33 @@ dev = [
     "pytest-timeout==2.4.0",
     "ruff==0.14.2",
     "pyright==1.1.407",
-    "pybind11==3.0.1",
-    "ai-edge-model-explorer==0.1.32"
+    "ai-edge-model-explorer==0.1.32",
 ]
 build = [
     "build==1.3.0",
-    "cmake>=3.22",
-    "ninja",
-    "pybind11==3.0.1",
-    "scikit-build-core==0.11.6",
-    "wheel==0.45.1"
 ]
 coverage = [
     "pytest-cov==7.0.0",
 ]
 
+[tool.hatch.build.targets.wheel]
+packages = ["src/vgf_adapter_model_explorer"]
+
 [tool.hatch.envs.default]
 dependencies = [
     "ai-edge-model-explorer==0.1.32",
     "build==1.3.0",
-    "cmake>=3.28",
-    "ninja",
-    "pybind11==3.0.1",
     "pyright==1.1.407",
     "pytest==9.0.1",
     "pytest-cov==7.0.0",
     "pytest-timeout==2.4.0",
     "ruff==0.14.2",
-    "scikit-build-core==0.11.6",
 ]
 
 [tool.hatch.envs.default.scripts]
-configure-native = "python -c \"import os, subprocess, sys; build_dir = os.environ.get('VGF_NATIVE_BUILD_DIR', '.native/build'); raise SystemExit(subprocess.call(['cmake', '-S', '.', '-B', build_dir, '-DPython3_EXECUTABLE=' + sys.executable]))\""
-build-native = "python -c \"import os, subprocess; build_dir = os.environ.get('VGF_NATIVE_BUILD_DIR', '.native/build'); raise SystemExit(subprocess.call(['cmake', '--build', build_dir, '--target', 'vgfpy', '--config', 'Release']))\""
-stage-native = "python tools/stage_vgfpy_for_tests.py"
 lint = "ruff check --output-format=github"
 format-check = "ruff format --check"
 type-check = "pyright"
-build = [
-    "configure-native",
-    "build-native",
-    "stage-native",
-]
 test = "pytest --tb=short {args}"
 
 [tool.hatch.envs.ci]
@@ -93,38 +76,18 @@ dev-mode = false
 dependencies = [
     "ai-edge-model-explorer==0.1.32",
     "build==1.3.0",
-    "cmake>=3.28",
-    "ninja",
-    "pybind11==3.0.1",
     "pyright==1.1.407",
     "pytest==9.0.1",
     "pytest-cov==7.0.0",
     "pytest-timeout==2.4.0",
     "ruff==0.14.2",
-    "scikit-build-core==0.11.6",
 ]
 
 [tool.hatch.envs.ci.scripts]
-configure-native = "python -c \"import os, subprocess, sys; build_dir = os.environ.get('VGF_NATIVE_BUILD_DIR', '.native/build'); raise SystemExit(subprocess.call(['cmake', '-S', '.', '-B', build_dir, '-DPython3_EXECUTABLE=' + sys.executable]))\""
-build-native = "python -c \"import os, subprocess; build_dir = os.environ.get('VGF_NATIVE_BUILD_DIR', '.native/build'); raise SystemExit(subprocess.call(['cmake', '--build', build_dir, '--target', 'vgfpy', '--config', 'Release']))\""
-stage-native = "python tools/stage_vgfpy_for_tests.py"
 lint = "ruff check --output-format=github"
 format-check = "ruff format --check"
 type-check = "pyright"
-test = [
-    "configure-native",
-    "build-native",
-    "stage-native",
-    "pytest --tb=short {args}",
-]
-
-[tool.scikit-build]
-minimum-version = "0.11"
-cmake.version = ">=3.28"
-build.tool-args = []
-wheel.packages = ["src/vgf_adapter_model_explorer"]
-wheel.exclude = ["vgf_adapter_model_explorer/tests/**"]
-sdist.include = ["CMakeLists.txt"]
+test = "pytest --tb=short {args}"
 
 [tool.pyright]
 include = [
