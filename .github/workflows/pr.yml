@@ -1,7 +1,7 @@
 name: PR
 
 on:
-  pull_request_target:
+  pull_request:
     types:
       - opened
       - edited
@@ -22,4 +22,3 @@ jobs:
           subjectPatternError: 'PR title must not start with a capital letter. Got: "${subject}"'
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-

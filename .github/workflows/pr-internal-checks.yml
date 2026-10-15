@@ -16,4 +16,5 @@ jobs:
     with:
       internal_scan: true
       internal_review: true
-    secrets: inherit
+    secrets:
+      BLACKDUCK_API_TOKEN: ${{ secrets.BLACKDUCK_API_TOKEN }}

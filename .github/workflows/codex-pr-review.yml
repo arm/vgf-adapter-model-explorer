@@ -4,8 +4,14 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, edited]
 
+permissions: {}
+
 jobs:
   codex-review:
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: read
     if: >-
       ${{ github.repository_owner != 'arm' &&
       (github.event.action != 'edited' || github.event.changes.base != null) }}
