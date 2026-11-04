@@ -34,12 +34,17 @@ permissions:
 jobs:
   blackduck:
     if: ${{ github.event.repository.private }}
-    uses: Arm-Debug/github-workflow-wizardry/.github/workflows/blackduck-full-scan.yml@main
+    uses: Arm-Debug/github-workflow-wizardry/.github/workflows/blackduck-full-scan.yml@b1fec023c429c1027d936170f696a6ee6711ce6e
     with:
       project-name: ${{ inputs['project-name'] }}
       project-version: ${{ inputs['project-version'] }}
       source-path: ${{ inputs['source-path'] }}
       python-dependencies: ${{ inputs['python-dependencies'] }}
       snippet-matching: ${{ inputs['snippet-matching'] }}
+      vault-namespace: ${{ vars.VAULT_NAMESPACE }}
+      vault-secrets: |
+        kv/data/MLIA/CI?version=${{ vars.VAULT_CI_SECRET_VERSION || '0' }} BLACKDUCK_API_TOKEN | BLACKDUCK_API_TOKEN
     secrets:
-      BLACKDUCK_API_TOKEN: ${{ secrets.BLACKDUCK_API_TOKEN }}
+      VAULT_URL: ${{ secrets.VAULT_URL }}
+      VAULT_ROLE_ID: ${{ secrets.VAULT_ROLE_ID }}
+      VAULT_SECRET_ID: ${{ secrets.VAULT_SECRET_ID }}

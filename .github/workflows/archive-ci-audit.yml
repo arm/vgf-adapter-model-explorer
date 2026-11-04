@@ -1,0 +1,99 @@
+# SPDX-FileCopyrightText: Copyright 2026, Arm Limited and/or its affiliates.
+# SPDX-License-Identifier: Apache-2.0
+
+name: Archive CI audit
+on:
+  workflow_run:
+    workflows:
+      - "VGF Adapter for Model Explorer CI"
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run-id:
+        description: Successful release-tag CI run ID to archive before its GitHub retention expires.
+        type: string
+        required: true
+      run-attempt:
+        description: Attempt number; leave empty for the latest attempt.
+        type: string
+        default: ""
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  check-release-tag:
+    if: >-
+      github.repository_owner == 'Arm-Debug' &&
+      github.event.repository.private &&
+      (github.event_name == 'workflow_dispatch' ||
+       github.event.workflow_run.conclusion == 'success')
+    runs-on: ubuntu-latest
+    outputs:
+      eligible: ${{ steps.tag.outputs.eligible }}
+      run-attempt: ${{ steps.tag.outputs.run-attempt }}
+    steps:
+      - name: Check source run belongs to a release tag
+        id: tag
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7.1.0
+        env:
+          SOURCE_RUN_ID: ${{ inputs.run-id || format('{0}', github.event.workflow_run.id) }}
+          SOURCE_RUN_ATTEMPT: ${{ inputs.run-attempt }}
+        with:
+          script: |
+            core.setOutput('eligible', 'false');
+            const request = { ...context.repo, run_id: process.env.SOURCE_RUN_ID };
+            const run = context.payload.workflow_run || (process.env.SOURCE_RUN_ATTEMPT
+              ? (await github.rest.actions.getWorkflowRunAttempt({
+                  ...request, attempt_number: Number(process.env.SOURCE_RUN_ATTEMPT),
+                })).data
+              : (await github.rest.actions.getWorkflowRun(request)).data);
+            core.setOutput('run-attempt', String(run.run_attempt));
+            if (run.path !== '.github/workflows/ci.yml' ||
+                !['push', 'workflow_dispatch'].includes(run.event) ||
+                !/^v[^/]*\.[^/]*\.[^/]*$/.test(run.head_branch || '') ||
+                run.status !== 'completed' || run.conclusion !== 'success') {
+              core.info('Skipping: not a successful release-tag CI run.');
+              return;
+            }
+            try {
+              const { data: commit } = await github.rest.repos.getCommit({
+                ...context.repo, ref: `refs/tags/${run.head_branch}`,
+              });
+              core.setOutput('eligible', String(commit.sha === run.head_sha));
+              core.info(`Release tag: ${run.head_branch}; matching commit: ${commit.sha === run.head_sha}`);
+            } catch (error) {
+              if (![404, 422].includes(error.status)) throw error;
+              core.info('Skipping: no matching release tag exists.');
+            }
+
+  archive:
+    needs: check-release-tag
+    if: needs.check-release-tag.outputs.eligible == 'true'
+    runs-on: ${{ vars.LINUX_RUNNER || vars.UBUNTU_RUNNER || 'self-hosted-ubuntu-latest' }}
+    timeout-minutes: 60
+    steps:
+      - name: Import archive settings from Vault
+        id: vault
+        uses: hashicorp/vault-action@892a26828f195e65540a40b4768ae4571f51ebfc # v4
+        with:
+          url: ${{ secrets.VAULT_URL }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          namespace: ${{ vars.VAULT_NAMESPACE }}
+          exportEnv: false
+          secrets: |
+            kv/data/MLIA/CI?version=${{ vars.VAULT_CI_SECRET_VERSION || '0' }} CI_AUDIT_ARTIFACTORY_URL | AUDIT_REPOSITORY_URL ;
+            kv/data/MLIA/CI?version=${{ vars.VAULT_CI_SECRET_VERSION || '0' }} PUBLISH_PYPI_USERNAME | AUDIT_USERNAME ;
+            kv/data/MLIA/CI?version=${{ vars.VAULT_CI_SECRET_VERSION || '0' }} PUBLISH_PYPI_PASSWORD | AUDIT_PASSWORD
+      - name: Archive evidence
+        uses: Arm-Debug/github-workflow-wizardry/.github/actions/archive-workflow-run@4abb097114ba009b2a4847769eda1b620e97411f
+        with:
+          run-id: ${{ inputs.run-id || format('{0}', github.event.workflow_run.id) }}
+          run-attempt: ${{ needs.check-release-tag.outputs.run-attempt }}
+          repository-url: ${{ steps.vault.outputs.AUDIT_REPOSITORY_URL }}
+          username: ${{ steps.vault.outputs.AUDIT_USERNAME }}
+          password: ${{ steps.vault.outputs.AUDIT_PASSWORD }}
+          github-token: ${{ github.token }}

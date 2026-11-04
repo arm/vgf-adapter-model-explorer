@@ -22,14 +22,9 @@ runs:
       with:
         python-version: ${{ inputs.python-version }}
 
-    - name: Ensure pip is available
-      shell: bash
-      run: |
-        python -m ensurepip --upgrade || {
-          curl -sS https://bootstrap.pypa.io/get-pip.py -o "$RUNNER_TEMP/get-pip.py"
-          python "$RUNNER_TEMP/get-pip.py"
-        }
-        python -m pip install --upgrade pip
+    - uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081 # v5
+      with:
+        enable-cache: false
 
     - name: Set internal development version
       if: inputs.internal-dev-version == 'true'
@@ -43,15 +38,16 @@ runs:
 
     - name: Build plugin package
       shell: bash
-      run: |
-        python -m pip install build
-        python -m build --wheel
+      env:
+        BUILD_PYTHON_VERSION: ${{ inputs.python-version }}
+      run: uv build --python "$BUILD_PYTHON_VERSION" --wheel
 
     - name: Build source distribution
       if: inputs.build-sdist == 'true' && runner.os == 'Linux' && runner.arch == 'X64'
       shell: bash
-      run: |
-        python -m build --sdist
+      env:
+        BUILD_PYTHON_VERSION: ${{ inputs.python-version }}
+      run: uv build --python "$BUILD_PYTHON_VERSION" --sdist
 
     - name: Upload plugin package artifact
       uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3

@@ -43,7 +43,7 @@ jobs:
   qlty:
     name: Qlty checks
     if: ${{ inputs['qlty-check'] }}
-    runs-on: ${{ vars.LINUX_RUNNER || 'ubuntu-latest' }}
+    runs-on: ${{ vars.LINUX_RUNNER || 'self-hosted-ubuntu-latest' }}
     steps:
       - name: Checkout plugin repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -71,7 +71,7 @@ jobs:
       fail-fast: false
       matrix:
         python-version: ["3.10", "3.11", "3.12"]
-    runs-on: ${{ vars.LINUX_RUNNER || 'ubuntu-latest' }}
+    runs-on: ${{ vars.LINUX_RUNNER || 'self-hosted-ubuntu-latest' }}
     steps:
       - name: Checkout plugin repo
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
@@ -121,10 +121,10 @@ jobs:
 
   publish-internal-pypi:
     name: Publish wheel to internal PyPI
-    if: ${{ inputs['publish-internal-pypi'] && inputs['build-wheel'] && github.repository_owner != 'arm' }}
+    if: ${{ inputs['publish-internal-pypi'] && inputs['build-wheel'] && github.repository_owner == 'Arm-Debug' }}
     needs:
       - build-wheel
-    runs-on: ${{ vars.LINUX_RUNNER || 'ubuntu-latest' }}
+    runs-on: ${{ vars.LINUX_RUNNER || 'self-hosted-ubuntu-latest' }}
     environment:
       name: internal-pypi
     permissions: {}
@@ -138,6 +138,31 @@ jobs:
             exit 1
           fi
 
+      - name: Import publishing credentials from Vault
+        id: vault
+        uses: hashicorp/vault-action@892a26828f195e65540a40b4768ae4571f51ebfc # v4
+        with:
+          url: ${{ secrets.VAULT_URL }}
+          method: approle
+          roleId: ${{ secrets.VAULT_ROLE_ID }}
+          secretId: ${{ secrets.VAULT_SECRET_ID }}
+          namespace: ${{ vars.VAULT_NAMESPACE }}
+          exportEnv: false
+          secrets: |
+            kv/data/MLIA/CI?version=${{ vars.VAULT_CI_SECRET_VERSION || '0' }} PUBLISH_PYPI_HOST | PUBLISH_PYPI_HOST ;
+            kv/data/MLIA/CI?version=${{ vars.VAULT_CI_SECRET_VERSION || '0' }} PUBLISH_PYPI_USERNAME | PUBLISH_PYPI_USERNAME ;
+            kv/data/MLIA/CI?version=${{ vars.VAULT_CI_SECRET_VERSION || '0' }} PUBLISH_PYPI_PASSWORD | PUBLISH_PYPI_PASSWORD
+
+      - name: Check internal publishing configuration
+        shell: bash
+        env:
+          UPLOAD_URL: ${{ steps.vault.outputs.PUBLISH_PYPI_HOST }}
+        run: |
+          if [[ -z "$UPLOAD_URL" ]]; then
+            echo "Set PUBLISH_PYPI_HOST in Vault before publishing to Artifactory." >&2
+            exit 1
+          fi
+
       - name: Download distribution artifacts
         uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
         with:
@@ -148,8 +173,8 @@ jobs:
       - name: Publish distribution to internal PyPI
         uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33 # v1.14.2
         with:
-          repository-url: ${{ vars.INTERNAL_PYPI_UPLOAD_URL }}
-          user: ${{ secrets.INTERNAL_PYPI_USERNAME }}
-          password: ${{ secrets.INTERNAL_PYPI_TOKEN }}
+          repository-url: ${{ steps.vault.outputs.PUBLISH_PYPI_HOST }}
+          user: ${{ steps.vault.outputs.PUBLISH_PYPI_USERNAME }}
+          password: ${{ steps.vault.outputs.PUBLISH_PYPI_PASSWORD }}
           packages-dir: dist/
           attestations: false
