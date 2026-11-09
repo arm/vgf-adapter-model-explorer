@@ -2,12 +2,15 @@
 # SPDX-License-Identifier: Apache-2.0
 
 [build-system]
-requires = ["hatchling"]
+requires = [
+    "hatchling>=1.27.0",
+    "uv-dynamic-versioning>=0.8.2,<0.9.0",
+]
 build-backend = "hatchling.build"
 
 [project]
 name = "vgf-adapter-model-explorer"
-version = "0.5.2"
+dynamic = ["version"]
 description = "Adapter for Model Explorer to support VGF files"
 readme = "README.md"
 requires-python = ">=3.10, <3.15"
@@ -92,6 +95,16 @@ lint = "ruff check --output-format=github"
 format-check = "ruff format --check"
 type-check = "pyright"
 test = "pytest --tb=short {args}"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+vcs = "git"
+style = "pep440"
+pattern = "default"
+bump = true
+fallback-version = "0.0.0.dev0"
 
 [tool.pyright]
 include = [

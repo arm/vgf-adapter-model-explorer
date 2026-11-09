@@ -2,10 +2,13 @@
 
 ## Internal testing
 
-Run **Trigger Release** on internal `main` to update `pyproject.toml`, commit the
-version, and push its tag. Internal tag CI runs the test matrix, builds once,
-and publishes packages to Artifactory. The tag is no longer automatically
-copied to the public repository, so it can be tested internally first.
+Release versions are derived automatically from Git tags using dynamic
+versioning. To create a new release, determine the next version using
+`git-cliff`, then create and push the corresponding tag on internal `main`.
+
+Internal tag CI runs the test matrix, builds once, and publishes packages to
+Artifactory. The tag is no longer automatically copied to the public
+repository, so it can be tested internally first.
 
 Commits on `main` still sync publicly after a successful build. This change
 holds back release tags and public package publication, not source code.
