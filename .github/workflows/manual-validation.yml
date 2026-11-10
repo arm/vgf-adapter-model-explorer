@@ -12,11 +12,6 @@ on:
         required: true
         default: true
         type: boolean
-      internal-dev-version:
-        description: "Use a unique internal development version for the built wheel."
-        required: true
-        default: true
-        type: boolean
       qlty-check:
         description: "Run Qlty checks."
         required: true
@@ -85,7 +80,6 @@ jobs:
           PIP_INDEX_URL: https://pypi.org/simple
         with:
           python-version: ${{ matrix.python-version }}
-          internal-dev-version: ${{ inputs['internal-dev-version'] }}
           artifact-name: dist-py${{ matrix.python-version }}
           build-sdist: ${{ matrix.python-version == env.DEFAULT_PY_VERSION }}
 
@@ -130,15 +124,6 @@ jobs:
       name: internal-pypi
     permissions: {}
     steps:
-      - name: Require internal development version
-        env:
-          INTERNAL_DEV_VERSION: ${{ inputs['internal-dev-version'] }}
-        run: |
-          if [[ "$INTERNAL_DEV_VERSION" != "true" ]]; then
-            echo "Manual internal publishing requires internal-dev-version=true to avoid version collisions."
-            exit 1
-          fi
-
       - name: Import publishing credentials from Vault
         id: vault
         uses: hashicorp/vault-action@892a26828f195e65540a40b4768ae4571f51ebfc # v4

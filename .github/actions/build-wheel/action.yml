@@ -4,9 +4,6 @@ description: Builds wheels for VGF Adapter for Model Explorer
 inputs:
   python-version:
     required: true
-  internal-dev-version:
-    required: false
-    default: "false"
   artifact-name:
     required: false
     default: dist
@@ -25,16 +22,6 @@ runs:
     - uses: astral-sh/setup-uv@e58605a9b6da7c637471fab8847a5e5a6b8df081 # v5
       with:
         enable-cache: false
-
-    - name: Set internal development version
-      if: inputs.internal-dev-version == 'true'
-      shell: bash
-      run: |
-        BASE_VERSION=$(sed -n 's/^version = "\(.*\)"$/\1/p' pyproject.toml | head -n 1)
-        SHORT_SHA="${GITHUB_SHA::7}"
-        DEV_VERSION="${BASE_VERSION}.dev${GITHUB_RUN_NUMBER}+${SHORT_SHA}"
-        echo "Building internal development version ${DEV_VERSION} from ${GITHUB_SHA}"
-        sed -i "s/^version = \".*\"$/version = \"${DEV_VERSION}\"/" pyproject.toml
 
     - name: Build plugin package
       shell: bash

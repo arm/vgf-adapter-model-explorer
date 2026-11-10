@@ -120,7 +120,6 @@ jobs:
       - uses: ./.github/actions/build-wheel
         with:
           python-version: "3.10"
-          internal-dev-version: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && github.repository_owner != 'arm' }}
           artifact-name: dist
           build-sdist: "true"
 
